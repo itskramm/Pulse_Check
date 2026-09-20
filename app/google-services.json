@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "209271398987",
+    "project_id": "pulsecheck-2264d",
+    "storage_bucket": "pulsecheck-2264d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:209271398987:android:ec3c987af45ba2243de3ce",
+        "android_client_info": {
+          "package_name": "com.example.pulsecheck"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDrNMlmu8KAoHiZPi-rqjoCygjHVhqoVxA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

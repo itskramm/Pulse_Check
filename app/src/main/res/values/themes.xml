@@ -1,0 +1,12 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Base.Theme.PulseCheck" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/pulse_primary</item>
+        <item name="colorPrimaryVariant">@color/pulse_secondary</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/pulse_secondary</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="android:statusBarColor" tools:targetApi="l">@color/pulse_surface</item>
+    </style>
+
+    <style name="Theme.PulseCheck" parent="Base.Theme.PulseCheck" />
+</resources>

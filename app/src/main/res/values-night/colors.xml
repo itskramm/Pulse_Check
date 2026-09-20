@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dark mode overrides — these replace the light values automatically -->
+
+    <!-- Backgrounds -->
+    <color name="pulse_surface">#292929</color>          <!-- main screen bg -->
+    <color name="pulse_surface_variant">#292929</color>  <!-- secondary screen bg -->
+    <color name="pulse_background">#3e3e44</color>       <!-- card/panel bg -->
+
+    <!-- Brand -->
+    <color name="pulse_primary">#2b81ab</color>          <!-- teal accent -->
+    <color name="pulse_secondary">#2b81ab</color>
+    <color name="pulse_tertiary">#4a5759</color>
+
+    <!-- Text -->
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#CCCCCC</color>
+    <color name="text_hint">#888888</color>
+
+    <!-- UI elements -->
+    <color name="divider">#4a5759</color>
+    <color name="light_grey">#4a5759</color>
+    <color name="white">#3e3e44</color>                  <!-- white fields become dark cards -->
+
+    <!-- Typography & Surface Tokens (dark mode) -->
+    <color name="pulse_on_surface">#FFFFFF</color>
+    <color name="pulse_card_stroke">#3a3a4a</color>
+    <color name="pulse_accent_light">#2a1a1a</color>
+
+    <!-- Auth Screens — DARK theme overrides (navy liquid) -->
+    <color name="auth_bg">#0B1622</color>            <!-- deep navy page background -->
+    <color name="auth_bg_gradient">#0E2030</color>   <!-- subtle gradient bottom -->
+    <color name="auth_card">#152232</color>          <!-- input / card surface -->
+    <color name="auth_card_border">#26374A</color>   <!-- subtle input border -->
+    <color name="auth_primary">#EF5350</color>       <!-- coral-red primary button -->
+    <color name="auth_accent">#2DD4BF</color>        <!-- teal accent (logo, links, step) -->
+    <color name="auth_text_primary">#FFFFFF</color>  <!-- primary white text -->
+    <color name="auth_text_secondary">#94A3B8</color><!-- muted gray text -->
+    <color name="auth_text_hint">#6B7A8D</color>     <!-- input hint gray -->
+    <color name="auth_icon">#8A99AB</color>          <!-- input leading icon -->
+    <color name="auth_required">#EF5350</color>      <!-- required asterisk -->
+    <color name="auth_step_inactive">#26374A</color> <!-- inactive step circle -->
+    <color name="auth_track_inactive">#26374A</color><!-- inactive progress track -->
+</resources>

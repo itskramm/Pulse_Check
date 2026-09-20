@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- PulseCheck Brand Colors -->
+    <color name="pulse_primary">#0e6995</color>
+    <color name="pulse_secondary">#7bb098</color>
+    <color name="pulse_tertiary">#9eb9b9</color>
+    <color name="pulse_background">#e1f2f3</color>
+    <color name="pulse_surface">#f0eeff</color>
+    <color name="pulse_surface_variant">#d6d9f3</color>
+    <color name="pulse_alert">#dd3c00</color>
+
+    <!-- UI Utility Colors -->
+    <color name="light_blue">#4A9CFA</color>
+    <color name="light_grey">#AFB3B5</color>
+    <color name="text_primary">#333333</color>
+    <color name="text_secondary">#888888</color>
+    <color name="text_hint">#B0B0B0</color>
+    <color name="divider">#D3D3E5</color>
+
+    <!-- Alert State Colors -->
+    <color name="state_safe">#4CAF50</color>
+    <color name="state_countdown">#FFC107</color>
+    <color name="state_sos">#dd3c00</color>
+
+    <!-- Typography & Surface Tokens -->
+    <color name="pulse_on_surface">#1A1A2E</color>      <!-- deep navy for primary text -->
+    <color name="pulse_card_stroke">#D8E0F0</color>       <!-- subtle card border -->
+    <color name="pulse_accent_light">#FFF0EB</color>      <!-- light tint of alert for backgrounds -->
+
+    <!-- Dark Theme Color -->
+    <color name = "dark1"> #2b81ab</color>
+    <color name = "dark2"> #292929</color>
+    <color name = "dark3"> #4a5759</color>
+    <color name = "dark4"> #3e3e44</color>
+    <color name = "dark5"> #0e6995</color>
+
+    <!-- Auth Screens — LIGHT theme (default). Dark overrides live in values-night/colors.xml -->
+    <color name="auth_bg">#F4F6F8</color>            <!-- light page background -->
+    <color name="auth_bg_gradient">#E8ECF1</color>   <!-- subtle gradient bottom -->
+    <color name="auth_card">#FFFFFF</color>          <!-- input / card surface -->
+    <color name="auth_card_border">#E0E4EA</color>   <!-- subtle input border -->
+    <color name="auth_primary">#EF5350</color>       <!-- coral-red primary button -->
+    <color name="auth_accent">#0e6995</color>        <!-- brand accent (logo, links, step) -->
+    <color name="auth_text_primary">#1A1A2E</color>  <!-- dark primary text -->
+    <color name="auth_text_secondary">#5C6B7A</color><!-- muted gray text -->
+    <color name="auth_text_hint">#9AA5B1</color>     <!-- input hint gray -->
+    <color name="auth_icon">#8A99AB</color>          <!-- input leading icon -->
+    <color name="auth_required">#EF5350</color>      <!-- required asterisk -->
+    <color name="auth_step_inactive">#D8DEE6</color> <!-- inactive step circle -->
+    <color name="auth_track_inactive">#D8DEE6</color><!-- inactive progress track -->
+
+
+</resources>

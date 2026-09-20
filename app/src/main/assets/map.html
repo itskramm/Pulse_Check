@@ -1,0 +1,1421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PulseCheck Location</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin=""/>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+        
+        #map {
+            height: 100%;
+            width: 100%;
+        }
+        
+        /* Coordinate Info Overlay */
+        .info-overlay {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-size: 13px;
+            color: #333333;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            min-width: 220px;
+            line-height: 1.6;
+        }
+        
+        .info-overlay.dark {
+            background: rgba(40, 40, 40, 0.95);
+            color: #FFFFFF;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+        
+        .info-overlay .label {
+            font-weight: bold;
+            margin-bottom: 4px;
+            color: #0e6995;
+        }
+        
+        .info-overlay.dark .label {
+            color: #4db8e8;
+        }
+        
+        .info-overlay .value {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+        
+        /* Refresh Button */
+        .refresh-btn {
+            position: absolute;
+            bottom: 96px;
+            right: 16px;
+            width: 56px;
+            height: 56px;
+            background: #0e6995;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(14, 105, 149, 0.4);
+            cursor: pointer;
+            z-index: 1000;
+            font-size: 28px;
+            color: white;
+            user-select: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: none;
+        }
+        
+        .refresh-btn:hover {
+            box-shadow: 0 6px 16px rgba(14, 105, 149, 0.5);
+            transform: scale(1.05);
+        }
+        
+        .refresh-btn:active {
+            transform: scale(0.95) rotate(180deg);
+            transition: transform 0.3s ease;
+        }
+        
+        /* Emergency Services Panel */
+        .emergency-panel {
+            position: absolute;
+            bottom: 96px;
+            left: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 1000;
+        }
+        
+        .emergency-btn {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            font-size: 28px;
+            color: white;
+            user-select: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+            border: none;
+            opacity: 0.7;
+        }
+        
+        .emergency-btn.active {
+            opacity: 1;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+        }
+        
+        .emergency-btn:hover {
+            transform: scale(1.05);
+            opacity: 1;
+        }
+        
+        .emergency-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .btn-hospital {
+            background: #D32F2F;
+        }
+        
+        .btn-police {
+            background: #1976D2;
+        }
+        
+        .btn-fire {
+            background: #F57C00;
+        }
+        
+        .btn-contacts {
+            background: #FF5722;
+        }
+        
+        /* Path Control Panel */
+        .path-panel {
+            position: absolute;
+            top: 120px;
+            right: 16px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 200px;
+        }
+        
+        .path-panel.dark {
+            background: rgba(40, 40, 40, 0.95);
+            color: #FFFFFF;
+        }
+        
+        .path-panel.visible {
+            display: flex;
+        }
+        
+        .path-stats {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+        
+        .path-stats .label {
+            font-weight: bold;
+            color: #0e6995;
+        }
+        
+        .path-panel.dark .path-stats .label {
+            color: #4db8e8;
+        }
+        
+        .path-btn {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: none;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+        
+        .path-btn-clear {
+            background: #E64A19;
+            color: white;
+        }
+        
+        .path-btn-clear:hover {
+            background: #D84315;
+        }
+        
+        .path-btn-clear:active {
+            transform: scale(0.98);
+        }
+        
+        .path-btn-stop-sos {
+            background: #FF5722;
+            color: white;
+            margin-top: 4px;
+        }
+        
+        .path-btn-stop-sos:hover {
+            background: #F4511E;
+        }
+        
+        .path-btn-stop-sos:active {
+            transform: scale(0.98);
+        }
+        
+        /* Loading Spinner */
+        .loading-spinner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2000;
+            display: none;
+        }
+        
+        .spinner-circle {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(14, 105, 149, 0.3);
+            border-top-color: #0e6995;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Accuracy Circle styling */
+        .accuracy-circle {
+            fill: #0e6995;
+            fill-opacity: 0.1;
+            stroke: #0e6995;
+            stroke-opacity: 0.5;
+            stroke-width: 2;
+        }
+        
+        /* Pulsing animation for marker */
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 3px 8px rgba(0,0,0,0.4), 0 0 0 0 rgba(14, 105, 149, 0.7);
+            }
+            50% {
+                box-shadow: 0 3px 8px rgba(0,0,0,0.4), 0 0 0 10px rgba(14, 105, 149, 0);
+            }
+            100% {
+                box-shadow: 0 3px 8px rgba(0,0,0,0.4), 0 0 0 0 rgba(14, 105, 149, 0);
+            }
+        }
+        
+        .custom-marker {
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        /* Offline Warning Banner - Compact & Top-Positioned */
+        .offline-warning {
+            position: absolute;
+            top: 72px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 152, 0, 0.95);
+            border-radius: 12px;
+            padding: 12px 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 3000;
+            max-width: 90%;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            text-align: center;
+            display: none;
+            animation: slideDown 0.3s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from {
+                transform: translateX(-50%) translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(-50%) translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .offline-warning.visible {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .offline-warning .icon {
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        
+        .offline-warning .message {
+            font-size: 13px;
+            color: white;
+            font-weight: 500;
+            line-height: 1.4;
+            flex: 1;
+        }
+        
+        .offline-warning .dismiss-btn {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            flex-shrink: 0;
+        }
+        
+        .offline-warning .dismiss-btn:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+        
+        .offline-warning .dismiss-btn:active {
+            transform: scale(0.95);
+        }
+        
+        /* Gray out buttons when offline */
+        .emergency-btn.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        
+        /* Responsive adjustments for smaller screens */
+        @media (max-width: 600px) {
+            .info-overlay {
+                min-width: auto;
+                max-width: calc(100% - 32px);
+                font-size: 12px;
+            }
+            
+            .path-panel {
+                min-width: auto;
+                max-width: calc(100% - 32px);
+            }
+            
+            .offline-warning {
+                max-width: calc(100% - 32px);
+                font-size: 12px;
+                padding: 10px 16px;
+            }
+            
+            .offline-warning .icon {
+                font-size: 18px;
+            }
+            
+            .offline-warning .message {
+                font-size: 12px;
+            }
+            
+            .emergency-btn, .refresh-btn {
+                width: 48px;
+                height: 48px;
+                font-size: 24px;
+            }
+            
+            .emergency-panel {
+                bottom: 80px;
+                gap: 10px;
+            }
+            
+            .refresh-btn {
+                bottom: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    
+    <!-- Info Overlay -->
+    <div id="info-overlay" class="info-overlay">
+        <div class="label">📍 Current Location</div>
+        <div class="value" id="coord-display">Waiting for GPS...</div>
+    </div>
+    
+    <!-- Emergency Services Panel -->
+    <div class="emergency-panel">
+        <button class="emergency-btn btn-hospital" id="btn-hospital" onclick="toggleEmergencyService('hospital')" title="Hospitals">🏥</button>
+        <button class="emergency-btn btn-police" id="btn-police" onclick="toggleEmergencyService('police')" title="Police Stations">👮</button>
+        <button class="emergency-btn btn-fire" id="btn-fire" onclick="toggleEmergencyService('fire')" title="Fire Stations">🚒</button>
+        <button class="emergency-btn btn-contacts" id="btn-contacts" onclick="toggleContactRoutes()" title="Contact Routes">👥</button>
+    </div>
+    
+    <!-- Path Tracking Panel -->
+    <div id="path-panel" class="path-panel">
+        <div class="path-stats">
+            <div class="label">📍 Path Tracking</div>
+            <div id="path-stats-content">
+                <div><strong>Distance:</strong> <span id="path-distance">0 m</span></div>
+                <div><strong>Duration:</strong> <span id="path-duration">0 min</span></div>
+                <div><strong>Points:</strong> <span id="path-points">0</span></div>
+            </div>
+        </div>
+        <button class="path-btn path-btn-clear" onclick="clearPath()">Clear Path</button>
+        <button class="path-btn path-btn-stop-sos" onclick="stopSosTracking()" style="display: none;" id="btn-stop-sos">Stop SOS Tracking</button>
+    </div>
+    
+    <!-- Refresh Button -->
+    <button class="refresh-btn" id="refresh-btn" onclick="onRefreshClick()">⟳</button>
+    
+    <!-- Loading Spinner -->
+    <div class="loading-spinner" id="loading-spinner">
+        <div class="spinner-circle"></div>
+    </div>
+    
+    <!-- Offline Warning Banner -->
+    <div class="offline-warning" id="offline-warning">
+        <div class="icon">📡</div>
+        <div class="message">Map tiles unavailable offline. GPS tracking still works!</div>
+        <button class="dismiss-btn" onclick="dismissOfflineWarning()">OK</button>
+    </div>
+    
+    <!-- Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+    
+    <script>
+        // Global variables
+        var map;
+        var currentMarker;
+        var accuracyCircle;
+        var currentTileLayer;
+        var lightTiles;
+        var darkTiles;
+        var isDarkMode = false;
+        
+        // Emergency services variables
+        var emergencyMarkers = {
+            hospital: [],
+            police: [],
+            fire: []
+        };
+        var activeServices = {
+            hospital: false,
+            police: false,
+            fire: false
+        };
+        
+        // Contact routing variables
+        var contactMarkers = [];
+        var contactRoutes = [];
+        var showingContactRoutes = false;
+        
+        // Path tracking variables
+        var pathHistory = [];
+        var pathPolyline = null;
+        var isTracking = false;
+        var trackingStartTime = null;
+        var currentLatLng = null;
+        
+        // Initialize map centered at Manila, Philippines
+        function initMap() {
+            // Philippines geographic bounds
+            // North: Y'Ami Island (Batanes) ~21.2°N
+            // South: Tawi-Tawi ~4.5°N
+            // West: Western Palawan ~117°E
+            // East: Eastern Mindanao ~127°E
+            var philippinesBounds = L.latLngBounds(
+                L.latLng(4.0, 116.0),  // Southwest corner (with buffer)
+                L.latLng(21.5, 127.5)  // Northeast corner (with buffer)
+            );
+            
+            // Create map with bounds restrictions
+            map = L.map('map', {
+                center: [12.8797, 121.7740], // Center of Philippines
+                zoom: 6,
+                minZoom: 6,    // Prevent zooming out too far
+                maxZoom: 19,   // Allow detailed street view
+                zoomControl: true,
+                maxBounds: philippinesBounds,
+                maxBoundsViscosity: 1.0 // Prevent panning outside bounds
+            });
+            
+            // Define tile layers
+            lightTiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                maxZoom: 19,
+                minZoom: 6
+            });
+            
+            darkTiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', {
+                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/attributions">CARTO</a>',
+                maxZoom: 19,
+                minZoom: 6
+            });
+            
+            // Add default light tiles
+            currentTileLayer = lightTiles;
+            currentTileLayer.addTo(map);
+            
+            // Detect offline mode and show warning
+            checkOfflineStatus();
+            
+            // Create default marker (will be updated with actual location)
+            var customIcon = L.divIcon({
+                className: 'custom-marker-wrapper',
+                html: '<div class="custom-marker" style="width: 32px; height: 32px; background: #0e6995; border: 4px solid white; border-radius: 50%; box-shadow: 0 3px 8px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center;">' +
+                      '<div style="width: 8px; height: 8px; background: white; border-radius: 50%;"></div>' +
+                      '</div>',
+                iconSize: [32, 32],
+                iconAnchor: [16, 16]
+            });
+            
+            currentMarker = L.marker([12.8797, 121.7740], {
+                icon: customIcon,
+                zIndexOffset: 1000
+            }).addTo(map);
+        }
+        
+        // Update location marker and info
+        function updateLocation(lat, lng, accuracy) {
+            try {
+                var latlng = L.latLng(lat, lng);
+                
+                // Remove old accuracy circle if exists
+                if (accuracyCircle) {
+                    map.removeLayer(accuracyCircle);
+                }
+                
+                // Add accuracy circle
+                if (accuracy && accuracy > 0) {
+                    accuracyCircle = L.circle(latlng, {
+                        radius: accuracy,
+                        color: '#0e6995',
+                        fillColor: '#0e6995',
+                        fillOpacity: 0.1,
+                        weight: 2,
+                        opacity: 0.5
+                    }).addTo(map);
+                }
+                
+                // Update marker position
+                if (currentMarker) {
+                    currentMarker.setLatLng(latlng);
+                } else {
+                    var customMarkerIcon = L.divIcon({
+                        className: 'custom-marker-wrapper',
+                        html: '<div class="custom-marker" style="width: 32px; height: 32px; background: #0e6995; border: 4px solid white; border-radius: 50%; box-shadow: 0 3px 8px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center;">' +
+                              '<div style="width: 8px; height: 8px; background: white; border-radius: 50%;"></div>' +
+                              '</div>',
+                        iconSize: [32, 32],
+                        iconAnchor: [16, 16]
+                    });
+                    currentMarker = L.marker(latlng, {
+                        icon: customMarkerIcon,
+                        zIndexOffset: 1000
+                    }).addTo(map);
+                }
+                
+                // Store current location
+                currentLatLng = latlng;
+                
+                // Add to path history if tracking is active
+                if (isTracking) {
+                    addPathPoint(lat, lng);
+                }
+                
+                // Update info overlay
+                var latDir = lat >= 0 ? 'N' : 'S';
+                var lngDir = lng >= 0 ? 'E' : 'W';
+                var latFormatted = Math.abs(lat).toFixed(6) + '°' + latDir;
+                var lngFormatted = Math.abs(lng).toFixed(6) + '°' + lngDir;
+                
+                var coordText = '<strong>Latitude:</strong> ' + latFormatted + '<br>' +
+                               '<strong>Longitude:</strong> ' + lngFormatted;
+                
+                if (accuracy && accuracy > 0) {
+                    var accuracyText = Math.round(accuracy) + 'm';
+                    var accuracyQuality = accuracy < 10 ? 'Excellent' : 
+                                         accuracy < 30 ? 'Good' : 
+                                         accuracy < 100 ? 'Fair' : 'Poor';
+                    coordText += '<br><strong>Accuracy:</strong> ±' + accuracyText + ' (' + accuracyQuality + ')';
+                }
+                
+                document.getElementById('coord-display').innerHTML = coordText;
+                
+                // Center map on new location
+                centerMap();
+                
+            } catch (error) {
+                console.error('Error updating location:', error);
+            }
+        }
+        
+        // Center map on current marker
+        function centerMap() {
+            if (currentMarker && map) {
+                map.setView(currentMarker.getLatLng(), map.getZoom(), {
+                    animate: true,
+                    duration: 0.5
+                });
+            }
+        }
+        
+        // Switch between light and dark themes
+        function setTheme(isDark) {
+            isDarkMode = isDark;
+            
+            // Remove current tile layer
+            if (currentTileLayer) {
+                map.removeLayer(currentTileLayer);
+            }
+            
+            // Add appropriate tile layer
+            currentTileLayer = isDark ? darkTiles : lightTiles;
+            currentTileLayer.addTo(map);
+            
+            // Update info overlay styling
+            var overlay = document.getElementById('info-overlay');
+            if (isDark) {
+                overlay.classList.add('dark');
+            } else {
+                overlay.classList.remove('dark');
+            }
+        }
+        
+        // Refresh button click handler
+        function onRefreshClick() {
+            try {
+                // Call Android interface if available
+                if (typeof Android !== 'undefined' && Android.onRefreshClicked) {
+                    Android.onRefreshClicked();
+                } else {
+                    console.log('Android interface not available');
+                    // For testing in browser
+                    centerMap();
+                }
+            } catch (error) {
+                console.error('Error calling Android interface:', error);
+            }
+        }
+        
+        // Show loading spinner
+        function showLoading() {
+            document.getElementById('loading-spinner').style.display = 'block';
+        }
+        
+        // Hide loading spinner
+        function hideLoading() {
+            document.getElementById('loading-spinner').style.display = 'none';
+        }
+        
+        // Initialize map when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                initMap();
+            } catch (error) {
+                console.error('Error initializing map:', error);
+                document.getElementById('info-overlay').innerHTML = 
+                    '<div style="color: #E64A19;">Map initialization failed</div>';
+            }
+        });
+        
+        // Global error handler
+        window.onerror = function(message, source, lineno, colno, error) {
+            console.error('JavaScript error:', message, 'at', source, lineno + ':' + colno);
+            return true; // Prevent default error handling
+        };
+        
+        // Log for debugging
+        console.log('PulseCheck Map initialized');
+        
+        // ============= EMERGENCY SERVICES FUNCTIONS =============
+        
+        // Toggle emergency service display
+        function toggleEmergencyService(serviceType) {
+            var isActive = activeServices[serviceType];
+            
+            if (isActive) {
+                // Deactivate - remove markers
+                clearEmergencyMarkers(serviceType);
+                activeServices[serviceType] = false;
+                document.getElementById('btn-' + serviceType).classList.remove('active');
+            } else {
+                // Activate - fetch and display
+                if (currentLatLng) {
+                    fetchEmergencyServices(serviceType, currentLatLng.lat, currentLatLng.lng);
+                    activeServices[serviceType] = true;
+                    document.getElementById('btn-' + serviceType).classList.add('active');
+                    
+                    // Clear contact routes when showing emergency services to avoid clutter
+                    if (showingContactRoutes) {
+                        clearContactRoutes();
+                        var contactBtn = document.getElementById('btn-contacts');
+                        if (contactBtn) contactBtn.classList.remove('active');
+                    }
+                } else {
+                    console.log('Current location not available');
+                }
+            }
+        }
+        
+        // Fetch emergency services from Overpass API
+        function fetchEmergencyServices(serviceType, lat, lng) {
+            showLoading();
+            
+            // Search radius: 5km
+            var radius = 5000;
+            
+            // Build Overpass query based on service type
+            var query = buildOverpassQuery(serviceType, lat, lng, radius);
+            
+            // Overpass API endpoint
+            var overpassUrl = 'https://overpass-api.de/api/interpreter';
+            
+            fetch(overpassUrl, {
+                method: 'POST',
+                body: 'data=' + encodeURIComponent(query)
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideLoading();
+                displayEmergencyMarkers(serviceType, data.elements);
+            })
+            .catch(error => {
+                hideLoading();
+                console.error('Error fetching emergency services:', error);
+            });
+        }
+        
+        // Build Overpass API query
+        function buildOverpassQuery(serviceType, lat, lng, radius) {
+            var query = '[out:json][timeout:25];(';
+            
+            switch(serviceType) {
+                case 'hospital':
+                    // Query hospitals, clinics, and health facilities
+                    query += 'node["amenity"="hospital"](around:' + radius + ',' + lat + ',' + lng + ');';
+                    query += 'way["amenity"="hospital"](around:' + radius + ',' + lat + ',' + lng + ');';
+                    query += 'node["amenity"="clinic"](around:' + radius + ',' + lat + ',' + lng + ');';
+                    query += 'way["amenity"="clinic"](around:' + radius + ',' + lat + ',' + lng + ');';
+                    break;
+                case 'police':
+                    // Query police stations
+                    query += 'node["amenity"="police"](around:' + radius + ',' + lat + ',' + lng + ');';
+                    query += 'way["amenity"="police"](around:' + radius + ',' + lat + ',' + lng + ');';
+                    break;
+                case 'fire':
+                    // Query fire stations
+                    query += 'node["amenity"="fire_station"](around:' + radius + ',' + lat + ',' + lng + ');';
+                    query += 'way["amenity"="fire_station"](around:' + radius + ',' + lat + ',' + lng + ');';
+                    break;
+            }
+            
+            query += ');out center;';
+            return query;
+        }
+        
+        // Display emergency service markers on map
+        function displayEmergencyMarkers(serviceType, elements) {
+            // Clear existing markers of this type
+            clearEmergencyMarkers(serviceType);
+            
+            var color, icon;
+            switch(serviceType) {
+                case 'hospital':
+                    color = '#D32F2F';
+                    icon = '🏥';
+                    break;
+                case 'police':
+                    color = '#1976D2';
+                    icon = '👮';
+                    break;
+                case 'fire':
+                    color = '#F57C00';
+                    icon = '🚒';
+                    break;
+            }
+            
+            elements.forEach(function(element) {
+                var lat, lng, name;
+                
+                // Get coordinates
+                if (element.lat && element.lon) {
+                    lat = element.lat;
+                    lng = element.lon;
+                } else if (element.center) {
+                    lat = element.center.lat;
+                    lng = element.center.lon;
+                } else {
+                    return; // Skip if no coordinates
+                }
+                
+                // Get name
+                name = element.tags.name || 'Unnamed ' + getServiceLabel(serviceType);
+                
+                // Calculate distance from current location
+                var distance = '';
+                if (currentLatLng) {
+                    var distanceMeters = calculateDistance(
+                        currentLatLng.lat, currentLatLng.lng,
+                        lat, lng
+                    );
+                    distance = formatDistance(distanceMeters);
+                }
+                
+                // Create custom marker
+                var markerIcon = L.divIcon({
+                    className: 'emergency-marker-wrapper',
+                    html: '<div style="width: 36px; height: 36px; background: ' + color + '; border: 3px solid white; border-radius: 50%; box-shadow: 0 2px 6px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; font-size: 20px;">' + icon + '</div>',
+                    iconSize: [36, 36],
+                    iconAnchor: [18, 18]
+                });
+                
+                var marker = L.marker([lat, lng], {
+                    icon: markerIcon,
+                    zIndexOffset: 500
+                }).addTo(map);
+                
+                // Add popup
+                var popupContent = '<div style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, sans-serif; min-width: 150px;">' +
+                                  '<div style="font-weight: bold; margin-bottom: 4px; color: ' + color + ';">' + name + '</div>';
+                
+                if (distance) {
+                    popupContent += '<div style="font-size: 12px; color: #666;">📍 ' + distance + ' away</div>';
+                }
+                
+                popupContent += '</div>';
+                
+                marker.bindPopup(popupContent);
+                
+                // Store marker reference
+                emergencyMarkers[serviceType].push(marker);
+            });
+            
+            console.log('Displayed ' + elements.length + ' ' + serviceType + ' markers');
+        }
+        
+        // Clear emergency markers of specific type
+        function clearEmergencyMarkers(serviceType) {
+            emergencyMarkers[serviceType].forEach(function(marker) {
+                map.removeLayer(marker);
+            });
+            emergencyMarkers[serviceType] = [];
+        }
+        
+        // Get service label
+        function getServiceLabel(serviceType) {
+            switch(serviceType) {
+                case 'hospital': return 'Hospital';
+                case 'police': return 'Police Station';
+                case 'fire': return 'Fire Station';
+                default: return 'Facility';
+            }
+        }
+        
+        // Calculate distance between two points (Haversine formula)
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            var R = 6371000; // Earth radius in meters
+            var dLat = toRadians(lat2 - lat1);
+            var dLon = toRadians(lon2 - lon1);
+            var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                    Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) *
+                    Math.sin(dLon/2) * Math.sin(dLon/2);
+            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
+        
+        function toRadians(degrees) {
+            return degrees * Math.PI / 180;
+        }
+        
+        // Format distance in human-readable form
+        function formatDistance(meters) {
+            if (meters < 1000) {
+                return Math.round(meters) + ' m';
+            } else {
+                return (meters / 1000).toFixed(1) + ' km';
+            }
+        }
+        
+        // ============= PATH TRACKING FUNCTIONS =============
+        
+        // Start path tracking
+        function startTracking() {
+            if (!isTracking) {
+                isTracking = true;
+                trackingStartTime = Date.now();
+                pathHistory = [];
+                
+                // Add current location as first point if available
+                if (currentLatLng) {
+                    addPathPoint(currentLatLng.lat, currentLatLng.lng);
+                }
+                
+                // Show path panel
+                document.getElementById('path-panel').classList.add('visible');
+                
+                // Show stop SOS button (will be hidden if not SOS-triggered)
+                var btnStopSos = document.getElementById('btn-stop-sos');
+                if (btnStopSos) {
+                    btnStopSos.style.display = 'block';
+                }
+                
+                console.log('Path tracking started');
+            }
+        }
+        
+        // Stop path tracking
+        function stopTracking() {
+            if (isTracking) {
+                isTracking = false;
+                console.log('Path tracking stopped. Total points: ' + pathHistory.length);
+            }
+        }
+        
+        // Add point to path history
+        function addPathPoint(lat, lng) {
+            var point = {
+                lat: lat,
+                lng: lng,
+                timestamp: Date.now()
+            };
+            
+            pathHistory.push(point);
+            
+            // Update polyline
+            updatePathPolyline();
+            
+            // Update statistics
+            updatePathStatistics();
+        }
+        
+        // Update path polyline on map
+        function updatePathPolyline() {
+            // Remove existing polyline
+            if (pathPolyline) {
+                map.removeLayer(pathPolyline);
+            }
+            
+            // Create new polyline if we have at least 2 points
+            if (pathHistory.length >= 2) {
+                var latlngs = pathHistory.map(function(point) {
+                    return [point.lat, point.lng];
+                });
+                
+                pathPolyline = L.polyline(latlngs, {
+                    color: '#2196F3',
+                    weight: 4,
+                    opacity: 0.7,
+                    smoothFactor: 1,
+                    lineCap: 'round',
+                    lineJoin: 'round'
+                }).addTo(map);
+                
+                // Add arrow decorations to show direction
+                if (typeof L.polylineDecorator !== 'undefined') {
+                    L.polylineDecorator(pathPolyline, {
+                        patterns: [{
+                            offset: '10%',
+                            repeat: '20%',
+                            symbol: L.Symbol.arrowHead({
+                                pixelSize: 8,
+                                pathOptions: {
+                                    fillOpacity: 1,
+                                    weight: 0,
+                                    color: '#2196F3'
+                                }
+                            })
+                        }]
+                    }).addTo(map);
+                }
+            }
+        }
+        
+        // Calculate total path distance
+        function calculatePathDistance() {
+            var totalDistance = 0;
+            
+            for (var i = 1; i < pathHistory.length; i++) {
+                var p1 = pathHistory[i - 1];
+                var p2 = pathHistory[i];
+                totalDistance += calculateDistance(p1.lat, p1.lng, p2.lat, p2.lng);
+            }
+            
+            return totalDistance;
+        }
+        
+        // Update path statistics display
+        function updatePathStatistics() {
+            // Calculate distance
+            var distance = calculatePathDistance();
+            document.getElementById('path-distance').textContent = formatDistance(distance);
+            
+            // Calculate duration
+            if (trackingStartTime) {
+                var durationMs = Date.now() - trackingStartTime;
+                var durationMin = Math.floor(durationMs / 60000);
+                var durationSec = Math.floor((durationMs % 60000) / 1000);
+                
+                if (durationMin > 0) {
+                    document.getElementById('path-duration').textContent = durationMin + ' min ' + durationSec + ' sec';
+                } else {
+                    document.getElementById('path-duration').textContent = durationSec + ' sec';
+                }
+            }
+            
+            // Update point count
+            document.getElementById('path-points').textContent = pathHistory.length;
+        }
+        
+        // Clear path
+        function clearPath() {
+            // Remove polyline from map
+            if (pathPolyline) {
+                map.removeLayer(pathPolyline);
+                pathPolyline = null;
+            }
+            
+            // Clear path history
+            pathHistory = [];
+            
+            // Reset tracking state
+            isTracking = false;
+            trackingStartTime = null;
+            
+            // Hide path panel
+            document.getElementById('path-panel').classList.remove('visible');
+            
+            // Reset statistics display
+            document.getElementById('path-distance').textContent = '0 m';
+            document.getElementById('path-duration').textContent = '0 min';
+            document.getElementById('path-points').textContent = '0';
+            
+            console.log('Path cleared');
+            
+            // Notify Android if available
+            if (typeof Android !== 'undefined' && Android.onPathCleared) {
+                try {
+                    Android.onPathCleared();
+                } catch (error) {
+                    console.error('Error notifying Android:', error);
+                }
+            }
+        }
+        
+        // Get path data as JSON (for Android to retrieve)
+        function getPathData() {
+            return JSON.stringify({
+                points: pathHistory,
+                distance: calculatePathDistance(),
+                duration: trackingStartTime ? Date.now() - trackingStartTime : 0,
+                startTime: trackingStartTime,
+                endTime: Date.now()
+            });
+        }
+        
+        // Stop SOS tracking (called from button)
+        function stopSosTracking() {
+            try {
+                // Call Android interface to deactivate SOS
+                if (typeof Android !== 'undefined' && Android.stopSosTracking) {
+                    Android.stopSosTracking();
+                } else {
+                    console.log('Android interface not available');
+                    // For browser testing
+                    stopTracking();
+                    document.getElementById('btn-stop-sos').style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Error stopping SOS tracking:', error);
+            }
+        }
+        
+        // ============= CONTACT ROUTING FUNCTIONS =============
+        
+        // Geocode address to coordinates using Nominatim API
+        function geocodeAddress(address, callback) {
+            // Add Philippines to search if not specified
+            var searchQuery = address;
+            if (!address.toLowerCase().includes('philippines')) {
+                searchQuery = address + ', Philippines';
+            }
+            
+            var nominatimUrl = 'https://nominatim.openstreetmap.org/search?format=json&q=' + 
+                              encodeURIComponent(searchQuery) + 
+                              '&countrycodes=ph&limit=1';
+            
+            fetch(nominatimUrl, {
+                headers: {
+                    'User-Agent': 'PulseCheck/1.0 (Safety App)'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.length > 0) {
+                    callback({
+                        lat: parseFloat(data[0].lat),
+                        lng: parseFloat(data[0].lon),
+                        displayName: data[0].display_name
+                    });
+                } else {
+                    console.log('No geocoding results for: ' + address);
+                    callback(null);
+                }
+            })
+            .catch(error => {
+                console.error('Geocoding error:', error);
+                callback(null);
+            });
+        }
+        
+        // Get route from contact location to user's location using OSRM API
+        function getRoute(fromLat, fromLng, toLat, toLng, callback) {
+            var osrmUrl = 'https://router.project-osrm.org/route/v1/driving/' + 
+                         fromLng + ',' + fromLat + ';' + toLng + ',' + toLat + 
+                         '?overview=full&geometries=geojson';
+            
+            fetch(osrmUrl)
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 'Ok' && data.routes && data.routes.length > 0) {
+                    var route = data.routes[0];
+                    callback({
+                        coordinates: route.geometry.coordinates,
+                        distance: route.distance, // meters
+                        duration: route.duration  // seconds
+                    });
+                } else {
+                    console.log('No route found');
+                    callback(null);
+                }
+            })
+            .catch(error => {
+                console.error('Routing error:', error);
+                callback(null);
+            });
+        }
+        
+        // Display contact markers and routes on map
+        function showContactRoutes(contactsJson) {
+            try {
+                var contacts = JSON.parse(contactsJson);
+                
+                if (!currentLatLng) {
+                    console.log('User location not available yet');
+                    return;
+                }
+                
+                // Clear existing contact markers and routes
+                clearContactRoutes();
+                
+                showingContactRoutes = true;
+                var processedCount = 0;
+                
+                // Set button to active state
+                var btn = document.getElementById('btn-contacts');
+                if (btn) btn.classList.add('active');
+                
+                contacts.forEach(function(contact) {
+                    if (!contact.address || contact.address.trim() === '') {
+                        return; // Skip contacts without addresses
+                    }
+                    
+                    // Geocode the address
+                    geocodeAddress(contact.address, function(location) {
+                        if (location) {
+                            // Calculate distance between user and contact
+                            var distance = map.distance(
+                                [currentLatLng.lat, currentLatLng.lng],
+                                [location.lat, location.lng]
+                            ); // in meters
+                            
+                            // If contact is very close (< 100m = same building), skip route
+                            if (distance < 100) {
+                                console.log('Contact ' + contact.name + ' is nearby (' + distance.toFixed(0) + 'm) - skipping route');
+                                
+                                // Still show marker but with "nearby" message
+                                var markerIcon = L.divIcon({
+                                    className: 'contact-marker-wrapper',
+                                    html: '<div style="width: 32px; height: 32px; background: #4CAF50; border: 3px solid white; border-radius: 50%; box-shadow: 0 2px 6px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; font-size: 16px;">👤</div>',
+                                    iconSize: [32, 32],
+                                    iconAnchor: [16, 16]
+                                });
+                                
+                                var marker = L.marker([location.lat, location.lng], {
+                                    icon: markerIcon,
+                                    zIndexOffset: 600
+                                }).addTo(map);
+                                
+                                var popupContent = '<div style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, sans-serif; min-width: 150px;">' +
+                                                  '<div style="font-weight: bold; margin-bottom: 4px; color: #4CAF50;">' + contact.name + '</div>' +
+                                                  '<div style="font-size: 12px; color: #666;">' + contact.affiliation + '</div>' +
+                                                  '<div style="font-size: 11px; color: #4CAF50; margin-top: 4px;">📍 Nearby (' + distance.toFixed(0) + 'm)</div>' +
+                                                  '</div>';
+                                
+                                marker.bindPopup(popupContent);
+                                contactMarkers.push(marker);
+                                
+                                processedCount++;
+                                if (processedCount === contacts.length) {
+                                    console.log('Displayed routes for ' + contactMarkers.length + ' contacts');
+                                }
+                                return; // Skip route calculation
+                            }
+                            
+                            // Create contact marker (for contacts > 100m away)
+                            var markerIcon = L.divIcon({
+                                className: 'contact-marker-wrapper',
+                                html: '<div style="width: 32px; height: 32px; background: #FF5722; border: 3px solid white; border-radius: 50%; box-shadow: 0 2px 6px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; font-size: 16px;">👤</div>',
+                                iconSize: [32, 32],
+                                iconAnchor: [16, 16]
+                            });
+                            
+                            var marker = L.marker([location.lat, location.lng], {
+                                icon: markerIcon,
+                                zIndexOffset: 600
+                            }).addTo(map);
+                            
+                            // Add popup with contact info
+                            var popupContent = '<div style="font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, sans-serif; min-width: 150px;">' +
+                                              '<div style="font-weight: bold; margin-bottom: 4px; color: #FF5722;">' + contact.name + '</div>' +
+                                              '<div style="font-size: 12px; color: #666;">' + contact.affiliation + '</div>';
+                            
+                            marker.bindPopup(popupContent);
+                            contactMarkers.push(marker);
+                            
+                            // Get route from USER to CONTACT (not contact to user)
+                            getRoute(currentLatLng.lat, currentLatLng.lng, location.lat, location.lng, function(routeData) {
+                                if (routeData) {
+                                    // Convert coordinates from [lng, lat] to [lat, lng]
+                                    var latlngs = routeData.coordinates.map(function(coord) {
+                                        return [coord[1], coord[0]];
+                                    });
+                                    
+                                    // Create route polyline
+                                    var route = L.polyline(latlngs, {
+                                        color: '#FF5722',
+                                        weight: 3,
+                                        opacity: 0.6,
+                                        dashArray: '10, 10'
+                                    }).addTo(map);
+                                    
+                                    contactRoutes.push(route);
+                                    
+                                    // Update marker popup with route info
+                                    var distance = (routeData.distance / 1000).toFixed(1) + ' km';
+                                    var duration = Math.round(routeData.duration / 60) + ' min';
+                                    
+                                    popupContent += '<div style="font-size: 11px; color: #FF5722; margin-top: 4px;">🚗 ' + distance + ' • ' + duration + '</div>';
+                                    popupContent += '</div>';
+                                    marker.setPopupContent(popupContent);
+                                }
+                                
+                                processedCount++;
+                                if (processedCount === contacts.length) {
+                                    console.log('Displayed routes for ' + contactMarkers.length + ' contacts');
+                                }
+                            });
+                        }
+                    });
+                });
+                
+            } catch (error) {
+                console.error('Error showing contact routes:', error);
+            }
+        }
+        
+        // Clear contact markers and routes
+        function clearContactRoutes() {
+            contactMarkers.forEach(function(marker) {
+                map.removeLayer(marker);
+            });
+            contactMarkers = [];
+            
+            contactRoutes.forEach(function(route) {
+                map.removeLayer(route);
+            });
+            contactRoutes = [];
+            
+            showingContactRoutes = false;
+        }
+        
+        // Toggle contact routes display
+        function toggleContactRoutes() {
+            var btn = document.getElementById('btn-contacts');
+            
+            if (showingContactRoutes) {
+                clearContactRoutes();
+                if (btn) btn.classList.remove('active');
+                console.log('Contact routes hidden');
+            } else {
+                // Clear all emergency services to avoid clutter
+                if (activeServices.hospital) toggleEmergencyService('hospital');
+                if (activeServices.police) toggleEmergencyService('police');
+                if (activeServices.fire) toggleEmergencyService('fire');
+                
+                // Call Android to get contact list
+                if (typeof Android !== 'undefined' && Android.getContactsWithAddresses) {
+                    Android.getContactsWithAddresses();
+                    // Button will be set to active after routes are loaded
+                } else {
+                    console.log('Android interface not available');
+                }
+            }
+        }
+        
+        // ============= OFFLINE DETECTION =============
+        
+        // Check if device is offline and show warning
+        function checkOfflineStatus() {
+            // Try to detect offline mode
+            var isOffline = !navigator.onLine;
+            
+            // Also try a quick fetch to test connectivity
+            fetch('https://tile.openstreetmap.org/ping', {
+                method: 'HEAD',
+                mode: 'no-cors',
+                cache: 'no-cache'
+            }).catch(function() {
+                isOffline = true;
+            }).finally(function() {
+                if (isOffline) {
+                    showOfflineWarning();
+                    disableOnlineFeatures();
+                }
+            });
+            
+            // Listen for online/offline events
+            window.addEventListener('online', function() {
+                hideOfflineWarning();
+                enableOnlineFeatures();
+            });
+            
+            window.addEventListener('offline', function() {
+                showOfflineWarning();
+                disableOnlineFeatures();
+            });
+        }
+        
+        // Show offline warning overlay
+        function showOfflineWarning() {
+            var warning = document.getElementById('offline-warning');
+            if (warning) {
+                warning.classList.add('visible');
+            }
+        }
+        
+        // Hide offline warning overlay
+        function hideOfflineWarning() {
+            var warning = document.getElementById('offline-warning');
+            if (warning) {
+                warning.classList.remove('visible');
+            }
+        }
+        
+        // Dismiss offline warning (user clicked "Got it")
+        function dismissOfflineWarning() {
+            hideOfflineWarning();
+        }
+        
+        // Disable features that require internet
+        function disableOnlineFeatures() {
+            // Disable emergency services buttons
+            var btnHospital = document.getElementById('btn-hospital');
+            var btnPolice = document.getElementById('btn-police');
+            var btnFire = document.getElementById('btn-fire');
+            var btnContacts = document.getElementById('btn-contacts');
+            
+            if (btnHospital) btnHospital.classList.add('disabled');
+            if (btnPolice) btnPolice.classList.add('disabled');
+            if (btnFire) btnFire.classList.add('disabled');
+            if (btnContacts) btnContacts.classList.add('disabled');
+        }
+        
+        // Enable features that require internet
+        function enableOnlineFeatures() {
+            // Enable emergency services buttons
+            var btnHospital = document.getElementById('btn-hospital');
+            var btnPolice = document.getElementById('btn-police');
+            var btnFire = document.getElementById('btn-fire');
+            var btnContacts = document.getElementById('btn-contacts');
+            
+            if (btnHospital) btnHospital.classList.remove('disabled');
+            if (btnPolice) btnPolice.classList.remove('disabled');
+            if (btnFire) btnFire.classList.remove('disabled');
+            if (btnContacts) btnContacts.classList.remove('disabled');
+        }
+    </script>
+</body>
+</html>

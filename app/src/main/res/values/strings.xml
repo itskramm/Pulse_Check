@@ -1,0 +1,58 @@
+<resources>
+    <string name="app_name">PulseCheck</string>
+    <string name="app_tagline">Real-Time Personal Safety Companion</string>
+
+    <!-- Auth -->
+    <string name="sign_in">Sign In</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="create_account">Create an Account</string>
+    <string name="already_have_account">Already have an account?</string>
+    <string name="dont_have_account">Don\'t have an account?</string>
+    <string name="forget_password">Forget password?</string>
+    <string name="log_in_biometrics">Log in with biometrics</string>
+
+    <!-- Home -->
+    <string name="sos_status_default">Your SOS will be sent to 0 people</string>
+    <string name="hold_for_safety">Hold for Safety</string>
+    <string name="sos_triggered">🚨 SOS SENT!</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_location">Location</string>
+    <string name="nav_contacts">Contacts</string>
+    <string name="nav_history">History</string>
+
+    <!-- Contacts -->
+    <string name="trusted_contacts">Trusted Contacts</string>
+    <string name="add_contacts">+ Add Contacts</string>
+    <string name="search_contact">Search contact</string>
+
+    <!-- Settings -->
+    <string name="about_profile">About Profile</string>
+    <string name="dark_mode">Dark mode</string>
+    <string name="absence_duration">Absence duration</string>
+    <string name="absence_duration_hint">(Duration of letting go countdown before alert)</string>
+    <string name="app_version">App Version: 1.0.0</string>
+
+    <!-- Notifications -->
+    <string name="notifications_title">Notifications</string>
+    <string name="delete_all_notifications">Delete all notifications</string>
+
+    <!-- History -->
+    <string name="alert_history">Alert History</string>
+
+    <!-- Location -->
+    <string name="track_my_location">Track my location</string>
+
+    <!-- Profile -->
+    <string name="create_profile">Create Profile</string>
+    <string name="edit_avatar">Edit</string>
+
+    <!-- Onboarding -->
+    <string name="continue_btn">Continue</string>
+    <string name="get_started">Get Started</string>
+
+    <!-- Permissions -->
+    <string name="permission_location_rationale">PulseCheck needs location access to send your coordinates in emergency alerts.</string>
+    <string name="permission_sms_rationale">PulseCheck needs SMS access to send emergency alerts to your trusted contacts.</string>
+</resources>
