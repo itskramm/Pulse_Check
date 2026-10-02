@@ -157,3 +157,5 @@ class ContactDatabaseHelper(context: Context) :
             "$COL_OTHER_ADDRESS TEXT, $COL_AVATAR_RES INTEGER);"
     }
 }
+
+

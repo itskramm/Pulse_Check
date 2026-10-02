@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Heartbeat/Pulse animation for the Dead Man's Switch button -->
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:interpolator="@android:anim/accelerate_decelerate_interpolator">
+
+    <!-- First beat - scale up -->
+    <scale
+        android:duration="150"
+        android:fromXScale="1.0"
+        android:fromYScale="1.0"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:toXScale="1.15"
+        android:toYScale="1.15"
+        android:startOffset="0" />
+
+    <!-- First beat - scale back -->
+    <scale
+        android:duration="150"
+        android:fromXScale="1.15"
+        android:fromYScale="1.15"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:toXScale="1.0"
+        android:toYScale="1.0"
+        android:startOffset="150" />
+
+    <!-- Pause -->
+    <scale
+        android:duration="100"
+        android:fromXScale="1.0"
+        android:fromYScale="1.0"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:toXScale="1.0"
+        android:toYScale="1.0"
+        android:startOffset="300" />
+
+    <!-- Second beat - smaller pulse -->
+    <scale
+        android:duration="120"
+        android:fromXScale="1.0"
+        android:fromYScale="1.0"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:toXScale="1.08"
+        android:toYScale="1.08"
+        android:startOffset="400" />
+
+    <!-- Second beat - back to normal -->
+    <scale
+        android:duration="120"
+        android:fromXScale="1.08"
+        android:fromYScale="1.08"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:toXScale="1.0"
+        android:toYScale="1.0"
+        android:startOffset="520" />
+
+    <!-- Long pause before next cycle -->
+    <scale
+        android:duration="480"
+        android:fromXScale="1.0"
+        android:fromYScale="1.0"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:toXScale="1.0"
+        android:toYScale="1.0"
+        android:startOffset="640" />
+
+</set>

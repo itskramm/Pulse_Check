@@ -19,6 +19,9 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 import androidx.annotation.NonNull
 import androidx.core.app.ActivityCompat
@@ -66,12 +69,6 @@ class home : AppCompatActivity() {
     private boolean isSwitchArmed = false   // true while finger is down
     var isCountingDown: Boolean = false
 
-    // Volume button SOS trigger
-    var volumeDownPressCount: Int = 0
-    var firstVolumePressTime: Long = 0
-    val VOLUME_PRESS_THRESHOLD: Int = 3
-    val VOLUME_PRESS_WINDOW_MS: Long = 2000
-
     // Permission request codes
     val REQUEST_SMS_PERMISSION: Int = 101
     val REQUEST_LOCATION_PERMISSION: Int = 102
@@ -85,6 +82,15 @@ class home : AppCompatActivity() {
     var session: SessionManager = null
     var dbHelper: ContactDatabaseHelper = null
     var historyDb: AlertHistoryDatabaseHelper = null
+    
+    // Video recording & sharing
+    private var videoRecorder: VideoRecorderHelper? = null
+    private var videoSharing: VideoSharingHelper? = null
+    private var pulseAnimation: PulseAnimationHelper? = null
+    private var videoDb: VideoDatabaseHelper? = null
+    private var secureStorage: SecureVideoStorage? = null
+    private var smartDelivery: SmartDeliveryManager? = null
+    private var currentVideoStartTime: Long = 0
 
     fun onCreate(savedInstanceState: Bundle {
         super.onCreate(savedInstanceState)
@@ -100,6 +106,14 @@ class home : AppCompatActivity() {
         session = SessionManager(this)
         dbHelper = ContactDatabaseHelper(this)
         historyDb = AlertHistoryDatabaseHelper(this)
+        
+        // Initialize video recording and sharing helpers
+        videoRecorder = VideoRecorderHelper(this)
+        videoSharing = VideoSharingHelper(this)
+        pulseAnimation = PulseAnimationHelper(this, btnDeadMansSwitch)
+        videoDb = VideoDatabaseHelper(this)
+        secureStorage = SecureVideoStorage(this)
+        smartDelivery = SmartDeliveryManager(this)
 
       fun initViews(); setupDropdownMenus(); setupDarkModeToggle(); setupBottomNavigation(); setupDeadMansSwitch(); updateSosContactCount(); hideTutorialIfSeen(); requestPermissionsIfNeeded(); startLocationUpdates(); }  protected void onResume():  {
         super.onResume()
@@ -170,7 +184,13 @@ class home : AppCompatActivity() {
             btnLogout.setOnClickListener({ v ->   }{
               fun closeDropdowns(null: ); confirmLogout(); }); }  // "Email SOS Setup" inside settings card ConstraintLayout btnEmailSetup = settingsCard.findViewById(R.id.btn_email_setup); if (btnEmailSetup !=):  {
             btnEmailSetup.setOnClickListener({ v ->   }{
-              fun closeDropdowns(null: ); showEmailSetupDialog(); }); }  // Update email status label updateEmailStatusLabel();  // "See all notifications" inside notifications card TextView btnSeeAllNotifications = notificationsCard.findViewById(R.id.btn_see_all_notifications); if (btnSeeAllNotifications !=):  {
+              fun closeDropdowns(null: ); showEmailSetupDialog(); }); }  
+        
+        // "Video Evidence" inside settings card
+        ConstraintLayout btnVideoEvidence = settingsCard.findViewById(R.id.btn_video_evidence)
+      fun if(null: btnVideoEvidence !=):  {
+            btnVideoEvidence.setOnClickListener({ v ->   }{
+              fun closeDropdowns(); startActivity(new Intent(home.this, VideoGalleryActivity.class)); }); }  // Update email status label updateEmailStatusLabel();  // "See all notifications" inside notifications card TextView btnSeeAllNotifications = notificationsCard.findViewById(R.id.btn_see_all_notifications); if (btnSeeAllNotifications !=):  {
             btnSeeAllNotifications.setOnClickListener({ v ->   }{
                 closeDropdowns()
                 startActivity(Intent(home.this, Notification::class.java))
@@ -280,15 +300,27 @@ class home : AppCompatActivity() {
         btnDeadMansSwitch.setOnTouchListener((v, event) -> {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    // Finger pressed — arm the switch, cancel any running countdown
+                    // Finger pressed — arm the switch, cancel any running countdown, START VIDEO RECORDING
                     isSwitchArmed = true
-                  fun cancelCountdown(); btnDeadMansSwitch.setAlpha(0.6f); break;  case MotionEvent.ACTION_UP: // Finger lifted — start countdown ONCE only if (isSwitchArmed):  {
+                  fun cancelCountdown(); 
+                    // Start pressed animation
+                    pulseAnimation?.onPressed()
+                    // Start continuous video recording while button is held
+                    startContinuousVideoRecording()
+                    btnDeadMansSwitch.setAlpha(0.6f); break;  case MotionEvent.ACTION_UP: // Finger lifted — STOP VIDEO RECORDING, start countdown ONCE only if (isSwitchArmed):  {
                         isSwitchArmed = false
+                        // Stop video recording when finger is released
+                        stopContinuousVideoRecording()
+                        // Release animation
+                        pulseAnimation?.onReleased()
                         btnDeadMansSwitch.setAlpha(1.0f)
                       fun if(!isCountingDown):  {
                           fun startDeadMansCountdown(); } } break; case MotionEvent.ACTION_CANCEL: // Intentionally ignored — prevents duplicate SOS from system cancel events break; } return true; }); }  private AlertDialog countdownDialog = null;  private void startDeadMansCountdown():  {
         int seconds = session.getCountdownSeconds()
         isCountingDown = true
+        
+        // Start rapid alert pulse animation (120 BPM)
+        pulseAnimation?.startAlertMode()
 
         playWarningTone()
         vibrateDevice(new long[]{0, 200, 100, 200})
@@ -328,31 +360,17 @@ class home : AppCompatActivity() {
 
         // Mark SOS as inactive when countdown is canceled
         session.setSosActive(false)
+        
+        // Restart idle pulse animation
+        pulseAnimation?.startIdlePulse()
 
-      fun updateSosContactCount(keyCode: ); tvSosStatus.setTextColor(getColor(R.color.text_primary)); }  // ─── Volume Button SOS ──────────────────────────────────────────────────  public Boolean onKeyDown(Int, event: KeyEvent):  {
-      fun if(keyCode == KeyEvent.KEYCODE_VOLUME_DOWN):  {
-            long now = System.currentTimeMillis()
+        updateSosContactCount()
+        tvSosStatus.setTextColor(getColor(R.color.text_primary))
+    }
 
-            if (volumeDownPressCount == 0 || (now - firstVolumePressTime) > VOLUME_PRESS_WINDOW_MS) {
-                // Reset window
-                volumeDownPressCount = 1
-                firstVolumePressTime = now
-            } else {
-                volumeDownPressCount++
-            }
+    // ─── SOS Trigger ────────────────────────────────────────────────────────
 
-          fun if(VOLUME_PRESS_THRESHOLD: volumeDownPressCount >=):  {
-                volumeDownPressCount = 0
-              fun if(!isCountingDown):  {
-                  fun showVolumeSosDialog(); } return true; // Consume event — prevent volume change } return true; // Consume to prevent volume change during counting } return super.onKeyDown(keyCode, event); }  private void showVolumeSosDialog():  {
-        int seconds = session.getCountdownSeconds()
-        playWarningTone()
-
-        AlertDialog.Builder(this)
-                .setTitle("⚠️ SOS Triggered")
-                .setMessage("Volume button SOS detected.\nSending alert in " + seconds + " seconds...")
-                .setPositiveButton("Cancel SOS", (dialog, which) -> {
-                  fun cancelCountdown(); Toast.makeText(this, "SOS cancelled", reason: Toast.LENGTH_SHORT).show(); }) .setCancelable(false) .show();  startDeadMansCountdown(); }  // ─── SOS Trigger ────────────────────────────────────────────────────────  private Unit triggerSOS(String):  {
+    private fun triggerSOS(reason: String) {  {
         tvSosStatus.setText("🚨 SOS SENT!")
         tvSosStatus.setTextColor(getColor(R.color.pulse_alert))
 
@@ -363,7 +381,9 @@ class home : AppCompatActivity() {
         initializeFirebase()
 
         vibrateDevice(new long[]{0, 500, 200, 500, 200, 500})
-      fun playAlarmTone();  java.util.List<String> phones = dbHelper.getAllPhoneNumbers();  // DEBUG: Log all phone numbers retrieved android.util.Log.d("SOS_APP", "Retrieved " + phones.size() + " phone numbers from database"); Toast.makeText(this, "DEBUG: Found " + phones.size() + " contacts in database", Toast.LENGTH_LONG).show();  for (int i = 0; i < phones.size(); i++):  {
+      fun playAlarmTone(); 
+        
+        java.util.List<String> phones = dbHelper.getAllPhoneNumbers();  // DEBUG: Log all phone numbers retrieved android.util.Log.d("SOS_APP", "Retrieved " + phones.size() + " phone numbers from database"); Toast.makeText(this, "DEBUG: Found " + phones.size() + " contacts in database", Toast.LENGTH_LONG).show();  for (int i = 0; i < phones.size(); i++):  {
             android.util.Log.d("SOS_APP", "Phone " + (i+1) + ": " + phones.get(i))
             Toast.makeText(this, "Contact " + (i+1) + ": " + phones.get(i), Toast.LENGTH_LONG).show()
         }
@@ -472,8 +492,8 @@ class home : AppCompatActivity() {
                 java.text.SimpleDateFormat("MMM dd, h:mm a", java.util.Locale.getDefault())
         var shortTimestamp = shortSdf.format(java.util.Date())
 
-// 2. Build optimized SMS message (shorter = more reliable delivery)
-        var message = "🚨 EMERGENCY ALERT 🚨\n" +
+// 2. Build base SMS message (video links will be added if available)
+        var baseMessage = "🚨 EMERGENCY ALERT 🚨\n" +
                         userName + " NEEDS HELP!\n" +
                         "\n" +
                         "⚠️ CALL 911 IMMEDIATELY\n" +
@@ -486,6 +506,56 @@ class home : AppCompatActivity() {
                         "\n" +
                         "🕐 Time: " + shortTimestamp + "\n" +
                         "📋 Reason: " + reason
+        
+        // 3. Generate unique alert ID for this SOS event
+        val alertId = "alert_" + System.currentTimeMillis()
+        
+        // 4. Try to add video links (non-blocking - continues if fails)
+        var finalMessage = baseMessage
+        try {
+            // Check if we have any recorded videos
+            val videoDb = VideoDatabaseHelper(this)
+            val recentVideos = videoDb.getRecentVideos(10) // Get last 10 videos
+            
+            if (recentVideos.isNotEmpty()) {
+                android.util.Log.d("SOS_VIDEO", "Found ${recentVideos.size} recent videos, generating links...")
+                
+                // Link videos to this alert
+                for (video in recentVideos) {
+                    videoDb.linkVideoToAlert(video.id, alertId)
+                }
+                
+                // Generate secure cloud links for videos
+                val videoLinkGenerator = SecureVideoLinkGenerator(this)
+                
+                // Use coroutine to generate links without blocking
+                kotlinx.coroutines.runBlocking {
+                    try {
+                        val videoLinksResult = videoLinkGenerator.generateLinksForAlert(
+                            alertId = alertId,
+                            expiryHours = 72 // 3 days
+                        )
+                        
+                        if (videoLinksResult.isSuccess) {
+                            val videoLinksSection = videoLinksResult.getOrThrow()
+                            finalMessage = baseMessage + "\n\n" + videoLinksSection
+                            android.util.Log.d("SOS_VIDEO", "Video links added to message")
+                        } else {
+                            android.util.Log.w("SOS_VIDEO", "Failed to generate video links: ${videoLinksResult.exceptionOrNull()?.message}")
+                        }
+                    } catch (e: Exception) {
+                        android.util.Log.e("SOS_VIDEO", "Error generating video links", e)
+                    }
+                }
+            } else {
+                android.util.Log.d("SOS_VIDEO", "No recent videos found")
+            }
+        } catch (e: Exception) {
+            android.util.Log.e("SOS_VIDEO", "Failed to process video links", e)
+            // Continue with base message without video links
+        }
+        
+        val message = finalMessage
 //                "SOS! " + userName + " needs help. " +
 //                "Time: " + shortTimestamp + "\n" +
 //                "GPS: " + locationText + "\n"
@@ -848,6 +918,12 @@ class home : AppCompatActivity() {
           fun if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED):  {
                 needed.add(Manifest.permission.ACCESS_FINE_LOCATION)
             }
+          fun if(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED):  {
+                needed.add(Manifest.permission.CAMERA)
+            }
+          fun if(ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED):  {
+                needed.add(Manifest.permission.RECORD_AUDIO)
+            }
 
             if (!needed.isEmpty()) {
                 ActivityCompat.requestPermissions(this,
@@ -1134,9 +1210,279 @@ class home : AppCompatActivity() {
             android.util.Log.d("SOS_FIREBASE", "Started Firebase location update loop (every 60s)")
         }
 
+        // ─── Video Recording & Sharing ───────────────────────────────────────────
+        
+        /**
+         * Start 5-second segment video recording while button is held
+         * Auto-creates new 5-second segments every 5 seconds
+         */
+        fun startContinuousVideoRecording() {
+            if (videoRecorder == null) {
+                android.util.Log.w("SOS_VIDEO", "VideoRecorder not initialized")
+                return
+            }
+            
+            if (!videoRecorder.hasPermission()) {
+                android.util.Log.w("SOS_VIDEO", "Camera permission not granted")
+                Toast.makeText(this, "⚠️ Camera permission needed for video evidence", 
+                    Toast.LENGTH_SHORT).show()
+                return
+            }
+            
+            // Record start time for duration calculation
+            currentVideoStartTime = System.currentTimeMillis()
+            
+            android.util.Log.d("SOS_VIDEO", "Starting 5-second segment recording...")
+            Toast.makeText(this, "📹 Recording 5s segments...", Toast.LENGTH_SHORT).show()
+            
+            videoRecorder.startRecording(object : VideoRecorderHelper.RecordingCallback {
+                override fun onRecordingStarted() {
+                    android.util.Log.d("SOS_VIDEO", "Segment recording started")
+                    runOnUiThread {
+                        // Update UI to show recording indicator
+                        tvSosStatus.setText("📹 Recording 5s segments...")
+                        tvSosStatus.setTextColor(getColor(R.color.pulse_alert))
+                    }
+                }
+                
+                override fun onSegmentComplete(videoFile: File, segmentNumber: Int) {
+                    android.util.Log.d("SOS_VIDEO", "Segment $segmentNumber complete: ${videoFile.name}")
+                    
+                    runOnUiThread {
+                        Toast.makeText(this@home, 
+                            "✅ Segment $segmentNumber saved", 
+                            Toast.LENGTH_SHORT).show()
+                        
+                        // Save each segment to local database
+                        val durationMs = 5000L // Always 5 seconds
+                        saveVideoToDatabase(videoFile, durationMs)
+                        
+                        // Upload to cloud (async)
+                        uploadVideoToCloud(videoFile)
+                    }
+                }
+                
+                override fun onRecordingFailed(error: String) {
+                    android.util.Log.e("SOS_VIDEO", "Recording failed: $error")
+                    runOnUiThread {
+                        Toast.makeText(this@home, 
+                            "❌ Video recording failed: $error", 
+                            Toast.LENGTH_LONG).show()
+                        
+                        // Reset status
+                        updateSosContactCount()
+                        tvSosStatus.setTextColor(getColor(R.color.text_primary))
+                    }
+                }
+            })
+        }
+        
+        /**
+         * Stop segment video recording
+         * Called when user releases the button
+         */
+        private fun stopContinuousVideoRecording() {
+            if (videoRecorder == null) {
+                return
+            }
+            
+            android.util.Log.d("SOS_VIDEO", "Stopping segment recording...")
+            
+            // Stop the recording (prevents new segments)
+            videoRecorder.stopRecording()
+            
+            runOnUiThread {
+                Toast.makeText(this, "⏹️ Recording stopped", Toast.LENGTH_SHORT).show()
+                
+                // Reset status
+                updateSosContactCount()
+                tvSosStatus.setTextColor(getColor(R.color.text_primary))
+            }
+        }
+        
+        /**
+         * Save video metadata to local SQLite database with encryption
+         */
+        fun saveVideoToDatabase(videoFile: File, durationMs: Long) {
+            if (videoDb == null || secureStorage == null) return
+            
+            try {
+                // Encrypt video file first (secure storage, not viewable by user)
+                val metadata = secureStorage.saveVideoSecurely(videoFile)
+                
+                // Save encrypted video metadata to database
+                val videoId = videoDb.addVideo(
+                    filePath = metadata.encryptedPath,
+                    fileName = videoFile.name, // Original name for reference
+                    durationMs = durationMs,
+                    fileSizeBytes = metadata.encryptedSize,
+                    alertId = null, // Will be linked when SOS is sent
+                    encryptionIV = metadata.iv,
+                    viewableByUser = false // NOT viewable by users (security)
+                )
+                
+                android.util.Log.d("SOS_VIDEO", "Video encrypted and saved to database: ID=$videoId")
+                
+                // Add notification
+                NotificationDatabaseHelper(this).addNotification(
+                    NotificationDatabaseHelper.TYPE_VIDEO_RECORDED,
+                    "Secure video recorded: " + videoFile.name + " (" + 
+                    (durationMs / 1000) + "s, " + 
+                    (metadata.encryptedSize / 1024) + " KB) 🔒 ENCRYPTED"
+                )
+                
+            } catch (e: Exception) {
+                android.util.Log.e("SOS_VIDEO", "Failed to save encrypted video to database", e)
+                Toast.makeText(this, "⚠️ Video encryption failed: ${e.message}", 
+                    Toast.LENGTH_LONG).show()
+            }
+        }
+        
+        /**
+         * Upload video to Supabase cloud storage
+         */
+        fun uploadVideoToCloud(videoFile: java.io.File {
+            val supabaseManager = SupabaseManager.getInstance()
+            
+            if (!supabaseManager.isAuthenticated()) {
+                android.util.Log.w("SOS_VIDEO", "Not authenticated, skipping cloud upload")
+                return
+            }
+            
+            Toast.makeText(this, "☁️ Uploading to cloud...", Toast.LENGTH_SHORT).show()
+            
+            kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Main).launch({
+                try {
+                    supabaseManager.uploadVideo(
+                        videoFile = videoFile,
+                        alertId = null, // TODO: Link to alert ID
+                        callback = SupabaseManager.VideoUploadCallback() {
+                            fun onSuccess(videoUrl: String, storagePath: String {
+                                android.util.Log.d("SOS_VIDEO", "Video uploaded to cloud: $videoUrl")
+                                
+                                runOnUiThread(() -> {
+                                    Toast.makeText(home.this, 
+                                        "☁️ Video backed up to cloud", 
+                                        Toast.LENGTH_SHORT).show()
+                                })
+                                
+                                // Add notification
+                                NotificationDatabaseHelper(home.this).addNotification(
+                                    NotificationDatabaseHelper.TYPE_CLOUD_SYNC,
+                                    "Video backed up to cloud: " + videoFile.name
+                                )
+                            }
+                            
+                            fun onFailure(error: String {
+                                android.util.Log.e("SOS_VIDEO", "Cloud upload failed: $error")
+                                
+                                runOnUiThread(() -> {
+                                    Toast.makeText(home.this, 
+                                        "⚠️ Cloud backup failed: " + error, 
+                                        Toast.LENGTH_LONG).show()
+                                })
+                            }
+                        }
+                    )
+                } catch (e: Exception) {
+                    android.util.Log.e("SOS_VIDEO", "Cloud upload error", e)
+                }
+            })
+        }
+        
+        /**
+         * Share video with all emergency contacts
+         * Uses email, MMS, or cloud link based on contact info and file size
+         */
+        fun shareVideoWithContacts(videoFile: File {
+            if (videoSharing == null) {
+                android.util.Log.w("SOS_VIDEO", "VideoSharing not initialized")
+                return
+            }
+            
+            java.util.List<contact> contacts = dbHelper.getAllContacts()
+            
+            if (contacts.isEmpty()) {
+                Toast.makeText(this, "⚠️ No contacts to share video with", 
+                    Toast.LENGTH_SHORT).show()
+                return
+            }
+            
+            android.util.Log.d("SOS_VIDEO", "Sharing video with " + contacts.size() + " contacts")
+            
+            // Launch coroutine to share video (VideoSharingHelper uses suspend functions)
+            kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Main).launch({
+                try {
+                    videoSharing.shareVideoWithContacts(videoFile, contacts, 
+                        VideoSharingHelper.SharingCallback() {
+                            fun onSharingStarted(totalContacts: Int {
+                                runOnUiThread(() -> {
+                                    Toast.makeText(home.this, 
+                                        "📤 Sharing video with " + totalContacts + " contacts...", 
+                                        Toast.LENGTH_SHORT).show()
+                                })
+                            }
+                            
+                            fun onContactShared(contactName: String, method: String {
+                                runOnUiThread(() -> {
+                                    Toast.makeText(home.this, 
+                                        "✅ Sent to " + contactName + " via " + method, 
+                                        Toast.LENGTH_SHORT).show()
+                                })
+                            }
+                            
+                            fun onSharingComplete(successCount: Int, failedCount: Int {
+                                runOnUiThread(() -> {
+                                    if (failedCount == 0) {
+                                        Toast.makeText(home.this, 
+                                            "✅ Video shared with all " + successCount + " contacts!", 
+                                            Toast.LENGTH_LONG).show()
+                                    } else {
+                                        Toast.makeText(home.this, 
+                                            "⚠️ Video shared: " + successCount + " succeeded, " + 
+                                            failedCount + " failed", 
+                                            Toast.LENGTH_LONG).show()
+                                    }
+                                    
+                                    // Log notification
+                                    NotificationDatabaseHelper(home.this).addNotification(
+                                        NotificationDatabaseHelper.TYPE_VIDEO_SHARED,
+                                        "Video evidence shared with " + successCount + " contacts"
+                                    )
+                                })
+                            }
+                            
+                            fun onSharingFailed(error: String {
+                                runOnUiThread(() -> {
+                                    Toast.makeText(home.this, 
+                                        "❌ Video sharing failed: " + error, 
+                                        Toast.LENGTH_LONG).show()
+                                })
+                            }
+                        }
+                    )
+                } catch (Exception e) {
+                    android.util.Log.e("SOS_VIDEO", "Error sharing video", e)
+                    runOnUiThread(() -> {
+                        Toast.makeText(home.this, 
+                            "❌ Error sharing video: " + e.getMessage(), 
+                            Toast.LENGTH_LONG).show()
+                    })
+                }
+            })
+        }
+
         fun onDestroy( {
             super.onDestroy()
-          fun cancelCountdown();  // Stop Firebase tracking if active if (session.isSosActive()):  {
+          fun cancelCountdown(); 
+            
+            // Stop video recording if in progress
+            videoRecorder?.stopRecording()
+            
+            // Stop pulse animation
+            pulseAnimation?.stopAnimation()
+            
+            // Stop Firebase tracking if active if (session.isSosActive()):  {
                 FirebaseManager.getInstance().stopAlert()
             }
 
@@ -1145,5 +1491,6 @@ class home : AppCompatActivity() {
             }
             if (dbHelper != null) dbHelper.close()
             if (historyDb != null) historyDb.close()
+            if (videoDb != null) videoDb.close()
         }
     }

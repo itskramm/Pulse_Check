@@ -94,3 +94,10 @@ lint/tmp/
 
 # Android Profiling
 *.hprof
+
+# Environment variables (contains sensitive credentials)
+.env
+
+# Supabase local development
+supabase/.branches
+supabase/.temp

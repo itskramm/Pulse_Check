@@ -55,4 +55,41 @@
     <!-- Permissions -->
     <string name="permission_location_rationale">PulseCheck needs location access to send your coordinates in emergency alerts.</string>
     <string name="permission_sms_rationale">PulseCheck needs SMS access to send emergency alerts to your trusted contacts.</string>
+    <string name="permission_camera_rationale">PulseCheck can record a 5-second video during SOS alerts as evidence. This is optional.</string>
+
+    <!-- Video Recording -->
+    <string name="video_recording_started">📹 Recording 5-second video…</string>
+    <string name="video_recording_complete">✅ Video recorded</string>
+    <string name="video_recording_failed">❌ Video recording failed</string>
+    <string name="video_recording_permission_denied">Camera permission denied</string>
+    <string name="video_evidence_title">Video Evidence</string>
+    <string name="video_captured_at">Captured: %1$s</string>
+    <string name="video_size">Size: %1$s</string>
+    <string name="video_play">▶ Play Video</string>
+    <string name="video_delete">🗑 Delete Video</string>
+    <string name="video_share">📤 Share Video</string>
+    <string name="video_upload_cloud">☁️ Upload to Cloud</string>
+
+    <!-- Cloud Sync (Supabase) -->
+    <string name="cloud_sync">Cloud Sync</string>
+    <string name="cloud_sync_subtitle">Backup contacts and alerts to cloud</string>
+    <string name="cloud_sync_about_title">ℹ️ About Cloud Sync</string>
+    <string name="cloud_sync_about_desc">Supabase provides secure cloud backup for your emergency contacts and alert history. Your data is encrypted and only accessible to you.</string>
+    <string name="cloud_sync_enable">Enable Cloud Sync</string>
+    <string name="cloud_sync_config_title">Supabase Configuration</string>
+    <string name="cloud_sync_project_url">Project URL</string>
+    <string name="cloud_sync_anon_key">Anon/Public Key</string>
+    <string name="cloud_sync_url_hint">https://xxxxx.supabase.co</string>
+    <string name="cloud_sync_key_hint">Your anon key</string>
+    <string name="cloud_sync_help_text">Get these from your Supabase project:\nSettings → API → Project URL and anon key</string>
+    <string name="cloud_sync_save_credentials">Save Credentials</string>
+    <string name="cloud_sync_test_connection">Test Connection</string>
+    <string name="cloud_sync_actions_title">Cloud Actions</string>
+    <string name="cloud_sync_contacts">📤 Sync Contacts to Cloud</string>
+    <string name="cloud_sync_view_history">📋 View Cloud History</string>
+    <string name="cloud_sync_status_not_configured">❌ Not configured</string>
+    <string name="cloud_sync_status_connected">✅ Connected to Supabase</string>
+    <string name="cloud_sync_status_disabled">⚪ Configured but disabled</string>
+    <string name="cloud_sync_setup_title">📚 Setup Instructions</string>
+    <string name="cloud_sync_setup_steps">1. Create account at supabase.com\n\n2. Create a new project\n\n3. Run SQL schema from SUPABASE_SCHEMA.sql\n\n4. Go to Settings → API\n\n5. Copy your Project URL and anon key\n\n6. Paste them above and save</string>
 </resources>

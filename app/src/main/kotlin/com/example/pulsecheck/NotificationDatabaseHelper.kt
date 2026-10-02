@@ -73,6 +73,9 @@ class NotificationDatabaseHelper(context: Context) :
         const val COL_TIME = "time"
         const val TYPE_CONTACT_ADDED = "contact_added"
         const val TYPE_SOS_SENT = "sos_sent"
+        const val TYPE_VIDEO_RECORDED = "video_recorded"
+        const val TYPE_VIDEO_SHARED = "video_shared"
+        const val TYPE_CLOUD_SYNC = "cloud_sync"
         private val CREATE_TABLE = "CREATE TABLE $TABLE (" +
             "$COL_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
             "$COL_TYPE TEXT NOT NULL, $COL_MESSAGE TEXT NOT NULL, $COL_TIME TEXT NOT NULL);"
