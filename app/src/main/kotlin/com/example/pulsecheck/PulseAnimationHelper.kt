@@ -96,8 +96,6 @@ class PulseAnimationHelper(private val view: View) {
         alertAnimator = AnimatorSet().apply {
             playTogether(scaleX, scaleY, alpha)
             interpolator = AccelerateDecelerateInterpolator()
-            repeatCount = ValueAnimator.INFINITE
-            repeatMode = ValueAnimator.RESTART
             start()
         }
     }

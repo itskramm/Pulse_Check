@@ -1,47 +1,37 @@
 package com.example.pulsecheck
 
-/**
- * Supabase Configuration
- * 
- * IMPORTANT: Replace these values with your actual Supabase credentials
- * 
- * To get your credentials:
- * 1. Go to https://supabase.com/dashboard
- * 2. Select your project
- * 3. Go to Settings → API
- * 4. Copy the Project URL and anon/public key
- * 
- * SECURITY NOTE:
- * - The anon key is safe to use in mobile apps
- * - Row Level Security (RLS) policies protect your data
- * - Never commit service_role keys to version control
- */
+import android.content.Context
+
 object SupabaseConfig {
-    /**
-     * Your Supabase Project URL
-     * Format: https://your-project-id.supabase.co
-     */
     const val SUPABASE_URL = "https://yfpmsaqxxfrqchkduhta.supabase.co"
-    
-    /**
-     * Your Supabase Anon/Public Key
-     * This key is safe to use in mobile apps
-     */
-    const val SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlmcG1zYXF4eGZycWNoa2R1aHRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4OTcxMTYsImV4cCI6MjEwNjQ3MzExNn0.81aCYKib-biNwMi9WsfWbrPtkbw_3-cqaQ4aJqx-H20"
-    
-    /**
-     * Storage bucket name for encrypted videos
-     */
+    const val SUPABASE_ANON_KEY = "******"
     const val VIDEO_BUCKET_NAME = "sos-videos"
-    
-    /**
-     * Maximum video file size (100MB)
-     */
     const val MAX_VIDEO_SIZE_BYTES = 100 * 1024 * 1024L
-    
-    /**
-     * Enable Supabase debug logging
-     * Set to false in production
-     */
-    const val DEBUG_MODE = BuildConfig.DEBUG
+    const val DEBUG_MODE = false
+
+    private const val PREFS = "supabase_settings"
+    private const val ENABLED = "enabled"
+    private const val URL = "url"
+    private const val KEY = "key"
+
+    fun isConfigured(context: Context): Boolean =
+        getUrl(context).isNotBlank() && getAnonKey(context).isNotBlank()
+
+    fun isEnabled(context: Context): Boolean =
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getBoolean(ENABLED, false)
+
+    fun setEnabled(context: Context, enabled: Boolean) =
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putBoolean(ENABLED, enabled).apply()
+
+    fun getUrl(context: Context): String =
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getString(URL, SUPABASE_URL) ?: SUPABASE_URL
+
+    fun getAnonKey(context: Context): String =
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getString(KEY, SUPABASE_ANON_KEY) ?: SUPABASE_ANON_KEY
+
+    fun saveCredentials(context: Context, url: String, key: String) =
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
+            .putString(URL, url).putString(KEY, key).apply()
+
+    fun isInitialized() = false
 }
