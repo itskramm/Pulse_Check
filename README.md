@@ -6,31 +6,84 @@ PulseCheck is an Android safety app designed for solo travel and personal emerge
 
 ## Features
 
+### Core Security & Authentication
 - Local registration and login using SQLite with salted SHA-256 password hashes
 - Session persistence across app restarts
-- Trusted contacts management with add, edit, and delete actions
+- Biometric authentication support
+
+### Emergency Alert System
 - Dead Man's Switch countdown on the home screen
-- Volume Down SOS trigger sequence
-- SMS emergency alerts to saved contacts
-- Location access and map-based location view
+- Hold-to-activate SOS button (volume button trigger removed)
+- **5-second video recording segments** that auto-restart while button is held
+- SMS emergency alerts to saved contacts with secure video links
+- Location tracking and map-based location view
 - Alert history, notifications, and settings
-- Dark mode and configurable absence/countdown duration
-- Optional Firebase integration for cloud-backed features when configured
+
+### Video Evidence System (NEW)
+- **5-second continuous video segments** during SOS activation
+- **AES-256-GCM encryption** with hardware-backed Android KeyStore
+- **Local encrypted storage** before cloud upload
+- **Automatic cloud backup** via Supabase with retry logic
+- **Secure time-limited links** (72-hour expiry) sent via SMS
+- WiFi-preference for uploads to save mobile data
+- Video metadata tracking (duration, file size, sharing logs)
+
+### Contact Management
+- Trusted contacts management with add, edit, and delete actions
+- Contact groups and relationship tracking
+- Emergency contact verification
+
+### Smart Delivery System
+- **Carrier-specific SMS delays** (Globe, Smart, Sun, DITO detection)
+- Email fallback for alert delivery
+- Delivery status tracking and retry logic
+- Anti-spam optimization
+
+### Cloud Integration
+- Supabase backend for video storage and user data sync
+- Row Level Security (RLS) for data protection
+- Real-time location updates during active alerts
+- Optional Firebase integration for additional cloud features
 
 ## Tech stack
 
-- Kotlin
-- Android app targeting API 35
-- Gradle with Kotlin DSL
-- Material 3 and AndroidX UI components
-- SQLite and SharedPreferences for local persistence
-- Google Play Services Location
-- Firebase Authentication, Firestore, Realtime Database, and Cloud Messaging
-- JavaMail / Android Mail for email-based alert support
+- **Language:** Kotlin
+- **Platform:** Android (targeting API 35, minimum API 24)
+- **Build System:** Gradle with Kotlin DSL
+- **UI Framework:** Material 3 and AndroidX UI components
+- **Local Storage:** SQLite and SharedPreferences
+- **Cloud Backend:** Supabase (REST API)
+- **Location Services:** Google Play Services Location
+- **Video Recording:** CameraX / Camera2 API
+- **Encryption:** Android KeyStore with AES-256-GCM
+- **Networking:** OkHttp3 for HTTP requests
+- **Email:** JavaMail / Android Mail API
+- **Optional:** Firebase (Authentication, Firestore, Realtime Database, Cloud Messaging)
+
+### Key Dependencies
+```gradle
+// Video Recording
+implementation 'androidx.camera:camera-camera2:1.2.3'
+implementation 'androidx.camera:camera-lifecycle:1.2.3'
+
+// Encryption & Security
+implementation 'androidx.security:security-crypto:1.1.0-alpha06'
+
+// Networking
+implementation 'com.squareup.okhttp3:okhttp:4.11.0'
+
+// Email
+implementation 'com.sun.mail:android-mail:1.6.7'
+
+// JSON
+implementation 'com.google.code.gson:gson:2.10.1'
+```
 
 ## Project status
 
 This repository is a working Android prototype with app screens and local data handling already implemented. It is suitable for local testing and feature validation on a physical device, but it is not a production-grade emergency system.
+
+**Latest Update (2026-09-30)**: Complete frontend redesign with soft pink + coral design system. New Material3 UI with rounded components, improved accessibility, and consistent visual language.
 
 ## Requirements
 

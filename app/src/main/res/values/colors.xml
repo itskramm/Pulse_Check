@@ -3,54 +3,118 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <!-- PulseCheck Brand Colors -->
-    <color name="pulse_primary">#0e6995</color>
-    <color name="pulse_secondary">#7bb098</color>
-    <color name="pulse_tertiary">#9eb9b9</color>
-    <color name="pulse_background">#e1f2f3</color>
-    <color name="pulse_surface">#f0eeff</color>
-    <color name="pulse_surface_variant">#d6d9f3</color>
-    <color name="pulse_alert">#dd3c00</color>
-
-    <!-- UI Utility Colors -->
-    <color name="light_blue">#4A9CFA</color>
-    <color name="light_grey">#AFB3B5</color>
-    <color name="text_primary">#333333</color>
-    <color name="text_secondary">#888888</color>
-    <color name="text_hint">#B0B0B0</color>
-    <color name="divider">#D3D3E5</color>
-
+    <!-- ============================================== -->
+    <!-- PulseCheck Redesign - Soft Pink + Coral Theme -->
+    <!-- ============================================== -->
+    
+    <!-- Primary Brand Colors -->
+    <color name="pulse_primary">#EF5350</color>           <!-- Coral Red - Primary Actions -->
+    <color name="pulse_primary_dark">#E53935</color>      <!-- Darker Coral - Pressed State -->
+    <color name="pulse_primary_light">#FFCDD2</color>     <!-- Light Coral - Subtle Accents -->
+    
+    <!-- Background & Surface -->
+    <color name="pulse_background">#FFEEF0</color>        <!-- Soft Pink Background -->
+    <color name="pulse_background_alt">#F5E6E8</color>    <!-- Alternate Pink Shade -->
+    <color name="pulse_surface">#FFFFFF</color>           <!-- White Cards/Surfaces -->
+    <color name="pulse_surface_elevated">#FFFFFF</color>  <!-- Elevated Cards -->
+    
+    <!-- Avatar & Circle Colors -->
+    <color name="pulse_avatar_bg">#FFB3B3</color>         <!-- Light Coral Avatar -->
+    <color name="pulse_avatar_icon">#FFFFFF</color>       <!-- White Avatar Icons -->
+    <color name="pulse_avatar_overflow">#9E9E9E</color>   <!-- Gray Overflow Badge -->
+    
+    <!-- Navigation & Interactive -->
+    <color name="pulse_nav_bg">#FFFFFF</color>            <!-- White Nav Container -->
+    <color name="pulse_nav_active">#EF5350</color>        <!-- Coral Active Nav Item -->
+    <color name="pulse_nav_inactive">#000000</color>      <!-- Black Inactive Nav Item -->
+    <color name="pulse_nav_text_active">#EF5350</color>   <!-- Coral Active Text -->
+    <color name="pulse_nav_text_inactive">#000000</color> <!-- Black Inactive Text -->
+    
+    <!-- Button Colors -->
+    <color name="pulse_button_primary">#EF5350</color>    <!-- Coral Primary Button -->
+    <color name="pulse_button_secondary">#FFB3B3</color>  <!-- Light Coral Secondary -->
+    <color name="pulse_button_text">#FFFFFF</color>       <!-- White Button Text -->
+    
+    <!-- Input Fields -->
+    <color name="pulse_input_bg">#FFFFFF</color>          <!-- White Input Background -->
+    <color name="pulse_input_border">#E0E0E0</color>      <!-- Light Gray Border -->
+    <color name="pulse_input_text">#000000</color>        <!-- Black Input Text -->
+    <color name="pulse_input_hint">#9E9E9E</color>        <!-- Gray Hint Text -->
+    
+    <!-- Contact Cards -->
+    <color name="pulse_card_bg">#FFFFFF</color>           <!-- White Card Background -->
+    <color name="pulse_card_shadow">#1A000000</color>     <!-- Subtle Shadow (10% black) -->
+    <color name="pulse_card_phone_icon">#EF5350</color>   <!-- Coral Phone Icon -->
+    
+    <!-- Typography -->
+    <color name="pulse_text_primary">#000000</color>      <!-- Black Primary Text -->
+    <color name="pulse_text_secondary">#5C5C5C</color>    <!-- Dark Gray Secondary Text -->
+    <color name="pulse_text_hint">#9E9E9E</color>         <!-- Gray Hint Text -->
+    
+    <!-- Heart/SOS Button -->
+    <color name="pulse_heart_stroke">#EF5350</color>      <!-- Coral Heart Outline -->
+    <color name="pulse_heart_fill">#FFFFFF</color>        <!-- White Heart Fill -->
+    <color name="pulse_heart_pulse_line">#EF5350</color>  <!-- Coral Pulse Line -->
+    <color name="pulse_sos_circle">#EF5350</color>        <!-- Coral SOS Circle -->
+    
+    <!-- Settings Icon -->
+    <color name="pulse_settings_icon">#EF5350</color>     <!-- Coral Settings Gear -->
+    
+    <!-- Search Bar -->
+    <color name="pulse_search_bg">#FFFFFF</color>         <!-- White Search Background -->
+    <color name="pulse_search_icon">#9E9E9E</color>       <!-- Gray Search Icon -->
+    <color name="pulse_search_text">#000000</color>       <!-- Black Search Text -->
+    
+    <!-- Add Contact Button -->
+    <color name="pulse_add_contact_bg">#FFB3B3</color>    <!-- Light Coral Background -->
+    <color name="pulse_add_contact_text">#000000</color>  <!-- Black Text -->
+    <color name="pulse_add_contact_icon">#000000</color>  <!-- Black Plus Icon -->
+    
+    <!-- Profile Screen -->
+    <color name="pulse_profile_avatar_bg">#F5F5F5</color> <!-- Light Gray Avatar Circle -->
+    <color name="pulse_profile_avatar_icon">#9E9E9E</color><!-- Gray Avatar Icon -->
+    <color name="pulse_update_button">#EF5350</color>     <!-- Coral Update Button -->
+    
     <!-- Alert State Colors -->
-    <color name="state_safe">#4CAF50</color>
-    <color name="state_countdown">#FFC107</color>
-    <color name="state_sos">#dd3c00</color>
+    <color name="state_safe">#4CAF50</color>              <!-- Green Safe State -->
+    <color name="state_countdown">#FFC107</color>         <!-- Amber Countdown -->
+    <color name="state_sos">#EF5350</color>               <!-- Coral SOS State -->
+    
+    <!-- Legacy Support Colors (kept for backward compatibility) -->
+    <color name="pulse_secondary">#FFB3B3</color>
+    <color name="pulse_tertiary">#F5E6E8</color>
+    <color name="pulse_surface_variant">#FFEEF0</color>
+    <color name="pulse_alert">#EF5350</color>
+    <color name="light_blue">#EF5350</color>
+    <color name="light_grey">#E0E0E0</color>
+    <color name="text_primary">#000000</color>
+    <color name="text_secondary">#5C5C5C</color>
+    <color name="text_hint">#9E9E9E</color>
+    <color name="divider">#E0E0E0</color>
+    <color name="pulse_on_surface">#000000</color>
+    <color name="pulse_card_stroke">#E0E0E0</color>
+    <color name="pulse_accent_light">#FFB3B3</color>
 
-    <!-- Typography & Surface Tokens -->
-    <color name="pulse_on_surface">#1A1A2E</color>      <!-- deep navy for primary text -->
-    <color name="pulse_card_stroke">#D8E0F0</color>       <!-- subtle card border -->
-    <color name="pulse_accent_light">#FFF0EB</color>      <!-- light tint of alert for backgrounds -->
+    <!-- Dark Theme Colors (for future dark mode support) -->
+    <color name="dark1">#2b81ab</color>
+    <color name="dark2">#292929</color>
+    <color name="dark3">#4a5759</color>
+    <color name="dark4">#3e3e44</color>
+    <color name="dark5">#0e6995</color>
 
-    <!-- Dark Theme Color -->
-    <color name = "dark1"> #2b81ab</color>
-    <color name = "dark2"> #292929</color>
-    <color name = "dark3"> #4a5759</color>
-    <color name = "dark4"> #3e3e44</color>
-    <color name = "dark5"> #0e6995</color>
-
-    <!-- Auth Screens — LIGHT theme (default). Dark overrides live in values-night/colors.xml -->
-    <color name="auth_bg">#F4F6F8</color>            <!-- light page background -->
-    <color name="auth_bg_gradient">#E8ECF1</color>   <!-- subtle gradient bottom -->
-    <color name="auth_card">#FFFFFF</color>          <!-- input / card surface -->
-    <color name="auth_card_border">#E0E4EA</color>   <!-- subtle input border -->
-    <color name="auth_primary">#EF5350</color>       <!-- coral-red primary button -->
-    <color name="auth_accent">#0e6995</color>        <!-- brand accent (logo, links, step) -->
-    <color name="auth_text_primary">#1A1A2E</color>  <!-- dark primary text -->
-    <color name="auth_text_secondary">#5C6B7A</color><!-- muted gray text -->
-    <color name="auth_text_hint">#9AA5B1</color>     <!-- input hint gray -->
-    <color name="auth_icon">#8A99AB</color>          <!-- input leading icon -->
-    <color name="auth_required">#EF5350</color>      <!-- required asterisk -->
-    <color name="auth_step_inactive">#D8DEE6</color> <!-- inactive step circle -->
-    <color name="auth_track_inactive">#D8DEE6</color><!-- inactive progress track -->
-
+    <!-- Auth Screens Colors -->
+    <color name="auth_bg">#FFEEF0</color>                 <!-- Soft Pink Background -->
+    <color name="auth_bg_gradient">#F5E6E8</color>        <!-- Gradient Bottom -->
+    <color name="auth_card">#FFFFFF</color>               <!-- White Card -->
+    <color name="auth_card_border">#E0E0E0</color>        <!-- Light Gray Border -->
+    <color name="auth_primary">#EF5350</color>            <!-- Coral Primary Button -->
+    <color name="auth_accent">#EF5350</color>             <!-- Coral Accent -->
+    <color name="auth_text_primary">#000000</color>       <!-- Black Text -->
+    <color name="auth_text_secondary">#5C5C5C</color>     <!-- Gray Text -->
+    <color name="auth_text_hint">#9E9E9E</color>          <!-- Hint Gray -->
+    <color name="auth_icon">#9E9E9E</color>               <!-- Icon Gray -->
+    <color name="auth_required">#EF5350</color>           <!-- Required Asterisk -->
+    <color name="auth_step_inactive">#E0E0E0</color>      <!-- Inactive Step -->
+    <color name="auth_track_inactive">#E0E0E0</color>     <!-- Inactive Track -->
 
 </resources>

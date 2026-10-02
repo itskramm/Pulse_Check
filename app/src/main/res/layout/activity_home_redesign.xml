@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/main"
+    android:background="@color/pulse_background"
+    tools:context=".home">
+
+    <!-- Settings Icon (Top Left) -->
+    <ImageView
+        android:id="@+id/btnSettings"
+        android:layout_width="@dimen/settings_icon_size"
+        android:layout_height="@dimen/settings_icon_size"
+        android:layout_margin="@dimen/settings_icon_margin"
+        android:src="@drawable/setting"
+        android:padding="4dp"
+        app:tint="@color/pulse_settings_icon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Contact Carousel (Horizontal Scrollable Avatars) -->
+    <HorizontalScrollView
+        android:id="@+id/contactCarousel"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/carousel_height"
+        android:layout_marginHorizontal="@dimen/spacing_md"
+        android:layout_marginTop="@dimen/spacing_lg"
+        android:background="@drawable/bg_contact_carousel"
+        android:elevation="2dp"
+        android:scrollbars="none"
+        app:layout_constraintTop_toBottomOf="@id/btnSettings"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:id="@+id/contactsCarouselList"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="@dimen/carousel_padding">
+
+            <!-- Contacts will be added dynamically here -->
+            <!-- Example Contact Item -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_marginEnd="@dimen/spacing_sm">
+                
+                <ImageView
+                    android:layout_width="@dimen/carousel_avatar_size"
+                    android:layout_height="@dimen/carousel_avatar_size"
+                    android:background="@drawable/bg_avatar_circle"
+                    android:padding="16dp"
+                    android:src="@drawable/profile"
+                    app:tint="@color/pulse_avatar_icon" />
+                
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Magdalena"
+                    android:textSize="10sp"
+                    android:textColor="@color/pulse_text_primary"
+                    android:maxLines="1"
+                    android:ellipsize="end" />
+            </LinearLayout>
+
+            <!-- +N More Badge (shown when > 3 contacts) -->
+            <LinearLayout
+                android:id="@+id/contactOverflowBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:visibility="gone">
+                
+                <FrameLayout
+                    android:layout_width="@dimen/carousel_avatar_size"
+                    android:layout_height="@dimen/carousel_avatar_size">
+                    
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bg_avatar_circle"
+                        android:backgroundTint="@color/pulse_avatar_overflow" />
+                    
+                    <TextView
+                        android:id="@+id/tvOverflowCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="+3"
+                        android:textSize="18sp"
+                        android:textColor="@color/white"
+                        android:textStyle="bold" />
+                </FrameLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <!-- SOS Heart Button (Centered) -->
+    <FrameLayout
+        android:id="@+id/sosButtonContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_bias="0.45">
+
+        <!-- Outer Circle with Stroke -->
+        <View
+            android:layout_width="@dimen/sos_button_size"
+            android:layout_height="@dimen/sos_button_size"
+            android:background="@drawable/bg_sos_button" />
+
+        <!-- Heart Icon in Center -->
+        <ImageView
+            android:id="@+id/btnDeadMansSwitch"
+            android:layout_width="@dimen/sos_heart_icon_size"
+            android:layout_height="@dimen/sos_heart_icon_size"
+            android:layout_gravity="center"
+            android:src="@drawable/pulselogo"
+            app:tint="@color/pulse_heart_stroke"
+            android:scaleType="fitCenter" />
+
+    </FrameLayout>
+
+    <!-- Bottom Navigation Bar -->
+    <LinearLayout
+        android:id="@+id/bottomNav"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/nav_bar_height"
+        android:layout_marginHorizontal="@dimen/nav_bar_margin"
+        android:layout_marginBottom="@dimen/nav_bar_margin"
+        android:background="@drawable/bg_navigation_bar"
+        android:elevation="8dp"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/spacing_md"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Contacts Nav Item -->
+        <LinearLayout
+            android:id="@+id/nav_contacts"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+            
+            <ImageView
+                android:layout_width="@dimen/nav_icon_size"
+                android:layout_height="@dimen/nav_icon_size"
+                android:src="@drawable/contacts"
+                app:tint="@color/pulse_nav_active" />
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="Contacts"
+                android:textColor="@color/pulse_nav_text_active"
+                android:textSize="@dimen/nav_text_size"
+                android:textStyle="normal" />
+        </LinearLayout>
+
+        <!-- Map Nav Item -->
+        <LinearLayout
+            android:id="@+id/nav_location"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+            
+            <ImageView
+                android:layout_width="@dimen/nav_icon_size"
+                android:layout_height="@dimen/nav_icon_size"
+                android:src="@drawable/location"
+                app:tint="@color/pulse_nav_active" />
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="Map"
+                android:textColor="@color/pulse_nav_text_active"
+                android:textSize="@dimen/nav_text_size"
+                android:textStyle="normal" />
+        </LinearLayout>
+
+        <!-- Home Nav Item (Active) -->
+        <LinearLayout
+            android:id="@+id/nav_home"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+            
+            <ImageView
+                android:layout_width="@dimen/nav_icon_size"
+                android:layout_height="@dimen/nav_icon_size"
+                android:src="@drawable/home"
+                app:tint="@color/pulse_nav_inactive" />
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="Home"
+                android:textColor="@color/pulse_nav_text_inactive"
+                android:textSize="@dimen/nav_text_size"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- History Nav Item -->
+        <LinearLayout
+            android:id="@+id/nav_history"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+            
+            <ImageView
+                android:layout_width="@dimen/nav_icon_size"
+                android:layout_height="@dimen/nav_icon_size"
+                android:src="@drawable/history"
+                app:tint="@color/pulse_nav_active" />
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="History"
+                android:textColor="@color/pulse_nav_text_active"
+                android:textSize="@dimen/nav_text_size"
+                android:textStyle="normal" />
+        </LinearLayout>
+
+        <!-- Account Nav Item -->
+        <LinearLayout
+            android:id="@+id/nav_account"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+            
+            <ImageView
+                android:layout_width="@dimen/nav_icon_size"
+                android:layout_height="@dimen/nav_icon_size"
+                android:src="@drawable/profile"
+                app:tint="@color/pulse_nav_active" />
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="Account"
+                android:textColor="@color/pulse_nav_text_active"
+                android:textSize="@dimen/nav_text_size"
+                android:textStyle="normal" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Settings Menu Card (Hidden by default) -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/settings_menu_card"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:cardBackgroundColor="@color/pulse_surface"
+        app:cardCornerRadius="@dimen/card_corner_radius"
+        app:cardElevation="@dimen/card_elevation"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnSettings">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/card_padding">
+
+            <!-- About Profile -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/btn_about_profile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_sm"
+                android:background="@drawable/bg_input_field"
+                android:padding="@dimen/spacing_sm">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_sm"
+                    android:text="About Profile"
+                    android:textColor="@color/pulse_text_primary"
+                    android:textSize="@dimen/text_caption"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/profile"
+                    app:tint="@color/pulse_primary"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- Dark Mode Toggle -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_sm"
+                android:background="@drawable/bg_input_field"
+                android:padding="@dimen/spacing_sm">
+
+                <ImageView
+                    android:id="@+id/icon_moon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="@dimen/spacing_sm"
+                    android:src="@drawable/night"
+                    app:tint="@color/pulse_text_primary"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_md"
+                    android:text="Dark mode"
+                    android:textColor="@color/pulse_text_primary"
+                    android:textSize="@dimen/text_caption"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/icon_moon"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switch_dark_mode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- Absence Duration -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/btn_absence_duration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_sm"
+                android:background="@drawable/bg_input_field"
+                android:padding="@dimen/spacing_sm">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_sm"
+                    android:layout_marginEnd="@dimen/spacing_sm"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/icon_timer"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Absence duration"
+                        android:textColor="@color/pulse_text_primary"
+                        android:textSize="@dimen/text_caption"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Duration before alert"
+                        android:textColor="@color/pulse_text_hint"
+                        android:textSize="10sp" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/icon_timer"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/history"
+                    app:tint="@color/pulse_primary"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- Cloud Sync -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/btn_supabase_settings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_input_field"
+                android:padding="@dimen/spacing_sm">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_sm"
+                    android:layout_marginEnd="@dimen/spacing_sm"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/icon_cloud"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cloud Sync"
+                        android:textColor="@color/pulse_primary"
+                        android:textSize="@dimen/text_caption"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_cloud_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Not configured"
+                        android:textColor="@color/pulse_text_hint"
+                        android:textSize="10sp" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/icon_cloud"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@android:drawable/ic_menu_upload"
+                    app:tint="@color/pulse_primary"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Notifications Button (Hidden - will be added later) -->
+    <ImageView
+        android:id="@+id/btnNotifications"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

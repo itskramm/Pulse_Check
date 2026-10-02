@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="@dimen/contact_card_margin_vertical"
+    app:cardBackgroundColor="@color/pulse_card_bg"
+    app:cardCornerRadius="@dimen/contact_card_corner_radius"
+    app:cardElevation="@dimen/card_elevation">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/contact_card_height"
+        android:padding="@dimen/contact_card_padding">
+
+        <!-- Contact Avatar -->
+        <ImageView
+            android:id="@+id/contactAvatar"
+            android:layout_width="@dimen/avatar_small"
+            android:layout_height="@dimen/avatar_small"
+            android:background="@drawable/bg_avatar_circle"
+            android:padding="10dp"
+            android:src="@drawable/profile"
+            app:tint="@color/pulse_avatar_icon"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <!-- Contact Name -->
+        <TextView
+            android:id="@+id/contactName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_md"
+            android:layout_marginEnd="@dimen/spacing_md"
+            android:text="Magdalena B. Leones"
+            android:textSize="@dimen/text_body"
+            android:textColor="@color/pulse_text_primary"
+            android:textStyle="normal"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/contactAvatar"
+            app:layout_constraintEnd_toStartOf="@id/phoneIcon" />
+
+        <!-- Phone Icon -->
+        <ImageView
+            android:id="@+id/phoneIcon"
+            android:layout_width="@dimen/contact_phone_icon_size"
+            android:layout_height="@dimen/contact_phone_icon_size"
+            android:src="@android:drawable/ic_menu_call"
+            app:tint="@color/pulse_card_phone_icon"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

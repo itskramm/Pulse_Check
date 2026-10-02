@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Outer Circle -->
+    <item>
+        <shape android:shape="oval">
+            <stroke
+                android:width="12dp"
+                android:color="@color/pulse_sos_circle" />
+            <size
+                android:width="@dimen/sos_button_size"
+                android:height="@dimen/sos_button_size" />
+        </shape>
+    </item>
+    <!-- Inner White Circle -->
+    <item android:top="12dp" android:bottom="12dp" android:left="12dp" android:right="12dp">
+        <shape android:shape="oval">
+            <solid android:color="@color/pulse_heart_fill" />
+        </shape>
+    </item>
+</layer-list>

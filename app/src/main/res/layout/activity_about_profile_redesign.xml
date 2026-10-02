@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pulse_background"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/spacing_xxl">
+
+        <!-- Title -->
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xl"
+            android:text="Profile"
+            android:textSize="@dimen/text_title"
+            android:textColor="@color/pulse_text_primary"
+            android:textStyle="bold"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Profile Avatar -->
+        <FrameLayout
+            android:id="@+id/avatarContainer"
+            android:layout_width="@dimen/avatar_large"
+            android:layout_height="@dimen/avatar_large"
+            android:layout_marginTop="@dimen/spacing_lg"
+            app:layout_constraintTop_toBottomOf="@id/tvTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <ImageView
+                android:id="@+id/profileAvatar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_avatar_profile"
+                android:padding="32dp"
+                android:src="@drawable/profile"
+                app:tint="@color/pulse_profile_avatar_icon" />
+        </FrameLayout>
+
+        <!-- Form Fields Container -->
+        <LinearLayout
+            android:id="@+id/formContainer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/screen_padding_horizontal"
+            android:layout_marginTop="@dimen/spacing_lg"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@id/avatarContainer"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <!-- Full Name -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_xs"
+                android:text="Full Name"
+                android:textSize="@dimen/text_caption"
+                android:textColor="@color/pulse_text_secondary" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_md"
+                style="@style/Widget.PulseCheck.TextInputLayout">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etFullName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Magdalena A. Leones"
+                    android:inputType="textPersonName"
+                    android:textSize="@dimen/text_body" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Contact Number -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_xs"
+                android:text="Contact Number"
+                android:textSize="@dimen/text_caption"
+                android:textColor="@color/pulse_text_secondary" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_md"
+                style="@style/Widget.PulseCheck.TextInputLayout">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etContactNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="09187000420"
+                    android:inputType="phone"
+                    android:textSize="@dimen/text_body" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Email Address -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_xs"
+                android:text="Email Address"
+                android:textSize="@dimen/text_caption"
+                android:textColor="@color/pulse_text_secondary" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_md"
+                style="@style/Widget.PulseCheck.TextInputLayout">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="takutakuuuuu@gmail.com"
+                    android:inputType="textEmailAddress"
+                    android:textSize="@dimen/text_body" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Password -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_xs"
+                android:text="Password"
+                android:textSize="@dimen/text_caption"
+                android:textColor="@color/pulse_text_secondary" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_md"
+                app:endIconMode="password_toggle"
+                style="@style/Widget.PulseCheck.TextInputLayout">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="****************"
+                    android:inputType="textPassword"
+                    android:textSize="@dimen/text_body" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Birth Date -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_xs"
+                android:text="Birth date"
+                android:textSize="@dimen/text_caption"
+                android:textColor="@color/pulse_text_secondary" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_lg"
+                android:orientation="horizontal"
+                android:background="@drawable/bg_input_field"
+                android:padding="@dimen/input_padding_horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/tvBirthMonth"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Month"
+                    android:textSize="@dimen/text_body"
+                    android:textColor="@color/pulse_text_hint"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="/"
+                    android:textSize="@dimen/text_body"
+                    android:textColor="@color/pulse_text_hint"
+                    android:paddingHorizontal="@dimen/spacing_xs" />
+
+                <TextView
+                    android:id="@+id/tvBirthDay"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Day"
+                    android:textSize="@dimen/text_body"
+                    android:textColor="@color/pulse_text_hint"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="/"
+                    android:textSize="@dimen/text_body"
+                    android:textColor="@color/pulse_text_hint"
+                    android:paddingHorizontal="@dimen/spacing_xs" />
+
+                <TextView
+                    android:id="@+id/tvBirthYear"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Year"
+                    android:textSize="@dimen/text_body"
+                    android:textColor="@color/pulse_text_hint"
+                    android:gravity="center" />
+            </LinearLayout>
+
+            <!-- Update Button -->
+            <Button
+                android:id="@+id/btnUpdate"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/button_height"
+                android:text="Update"
+                android:textAllCaps="false"
+                android:textSize="@dimen/text_body"
+                android:textColor="@color/pulse_button_text"
+                android:background="@drawable/bg_button_primary"
+                style="@style/Widget.PulseCheck.Button.Primary" />
+
+        </LinearLayout>
+
+        <!-- Bottom Navigation Bar -->
+        <LinearLayout
+            android:id="@+id/bottomNav"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/nav_bar_height"
+            android:layout_marginHorizontal="@dimen/nav_bar_margin"
+            android:layout_marginTop="@dimen/spacing_lg"
+            android:background="@drawable/bg_navigation_bar"
+            android:elevation="8dp"
+            android:orientation="horizontal"
+            android:paddingHorizontal="@dimen/spacing_md"
+            app:layout_constraintTop_toBottomOf="@id/formContainer"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <!-- Contacts Nav Item -->
+            <LinearLayout
+                android:id="@+id/nav_contacts"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+                
+                <ImageView
+                    android:layout_width="@dimen/nav_icon_size"
+                    android:layout_height="@dimen/nav_icon_size"
+                    android:src="@drawable/contacts"
+                    app:tint="@color/pulse_nav_active" />
+                
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Contacts"
+                    android:textColor="@color/pulse_nav_text_active"
+                    android:textSize="@dimen/nav_text_size"
+                    android:textStyle="normal" />
+            </LinearLayout>
+
+            <!-- Map Nav Item -->
+            <LinearLayout
+                android:id="@+id/nav_location"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+                
+                <ImageView
+                    android:layout_width="@dimen/nav_icon_size"
+                    android:layout_height="@dimen/nav_icon_size"
+                    android:src="@drawable/location"
+                    app:tint="@color/pulse_nav_active" />
+                
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Map"
+                    android:textColor="@color/pulse_nav_text_active"
+                    android:textSize="@dimen/nav_text_size"
+                    android:textStyle="normal" />
+            </LinearLayout>
+
+            <!-- Home Nav Item -->
+            <LinearLayout
+                android:id="@+id/nav_home"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+                
+                <ImageView
+                    android:layout_width="@dimen/nav_icon_size"
+                    android:layout_height="@dimen/nav_icon_size"
+                    android:src="@drawable/home"
+                    app:tint="@color/pulse_nav_active" />
+                
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Home"
+                    android:textColor="@color/pulse_nav_text_active"
+                    android:textSize="@dimen/nav_text_size"
+                    android:textStyle="normal" />
+            </LinearLayout>
+
+            <!-- History Nav Item -->
+            <LinearLayout
+                android:id="@+id/nav_history"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+                
+                <ImageView
+                    android:layout_width="@dimen/nav_icon_size"
+                    android:layout_height="@dimen/nav_icon_size"
+                    android:src="@drawable/history"
+                    app:tint="@color/pulse_nav_active" />
+                
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="History"
+                    android:textColor="@color/pulse_nav_text_active"
+                    android:textSize="@dimen/nav_text_size"
+                    android:textStyle="normal" />
+            </LinearLayout>
+
+            <!-- Account Nav Item (Active) -->
+            <LinearLayout
+                android:id="@+id/nav_account"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+                
+                <ImageView
+                    android:layout_width="@dimen/nav_icon_size"
+                    android:layout_height="@dimen/nav_icon_size"
+                    android:src="@drawable/profile"
+                    app:tint="@color/pulse_nav_inactive" />
+                
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Account"
+                    android:textColor="@color/pulse_nav_text_inactive"
+                    android:textSize="@dimen/nav_text_size"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ============================================== -->
+    <!-- PulseCheck Design System - Dimensions -->
+    <!-- ============================================== -->
+    
+    <!-- Spacing System (8dp grid) -->
+    <dimen name="spacing_xs">4dp</dimen>
+    <dimen name="spacing_sm">8dp</dimen>
+    <dimen name="spacing_md">16dp</dimen>
+    <dimen name="spacing_lg">24dp</dimen>
+    <dimen name="spacing_xl">32dp</dimen>
+    <dimen name="spacing_xxl">48dp</dimen>
+    
+    <!-- Card & Container Spacing -->
+    <dimen name="card_padding">16dp</dimen>
+    <dimen name="card_margin">16dp</dimen>
+    <dimen name="card_elevation">4dp</dimen>
+    <dimen name="card_corner_radius">20dp</dimen>
+    
+    <!-- Button Dimensions -->
+    <dimen name="button_height">56dp</dimen>
+    <dimen name="button_corner_radius">28dp</dimen>
+    <dimen name="button_padding_horizontal">32dp</dimen>
+    
+    <!-- Input Field Dimensions -->
+    <dimen name="input_height">56dp</dimen>
+    <dimen name="input_corner_radius">12dp</dimen>
+    <dimen name="input_padding_horizontal">16dp</dimen>
+    <dimen name="input_padding_vertical">16dp</dimen>
+    
+    <!-- Avatar Dimensions -->
+    <dimen name="avatar_small">40dp</dimen>
+    <dimen name="avatar_medium">64dp</dimen>
+    <dimen name="avatar_large">120dp</dimen>
+    <dimen name="avatar_icon_size">24dp</dimen>
+    
+    <!-- SOS Heart Button -->
+    <dimen name="sos_button_size">280dp</dimen>
+    <dimen name="sos_button_stroke_width">12dp</dimen>
+    <dimen name="sos_heart_icon_size">160dp</dimen>
+    
+    <!-- Navigation Bar -->
+    <dimen name="nav_bar_height">80dp</dimen>
+    <dimen name="nav_bar_corner_radius">40dp</dimen>
+    <dimen name="nav_bar_margin">16dp</dimen>
+    <dimen name="nav_icon_size">28dp</dimen>
+    <dimen name="nav_text_size">12sp</dimen>
+    
+    <!-- Contact Card -->
+    <dimen name="contact_card_height">72dp</dimen>
+    <dimen name="contact_card_corner_radius">16dp</dimen>
+    <dimen name="contact_card_margin_vertical">6dp</dimen>
+    <dimen name="contact_card_padding">16dp</dimen>
+    <dimen name="contact_phone_icon_size">24dp</dimen>
+    
+    <!-- Search Bar -->
+    <dimen name="search_bar_height">56dp</dimen>
+    <dimen name="search_bar_corner_radius">12dp</dimen>
+    
+    <!-- Settings Icon -->
+    <dimen name="settings_icon_size">32dp</dimen>
+    <dimen name="settings_icon_margin">16dp</dimen>
+    
+    <!-- Contact Carousel -->
+    <dimen name="carousel_height">100dp</dimen>
+    <dimen name="carousel_corner_radius">50dp</dimen>
+    <dimen name="carousel_padding">12dp</dimen>
+    <dimen name="carousel_avatar_size">64dp</dimen>
+    <dimen name="carousel_spacing">8dp</dimen>
+    
+    <!-- Typography -->
+    <dimen name="text_display">32sp</dimen>
+    <dimen name="text_headline">24sp</dimen>
+    <dimen name="text_title">20sp</dimen>
+    <dimen name="text_body">16sp</dimen>
+    <dimen name="text_caption">14sp</dimen>
+    <dimen name="text_small">12sp</dimen>
+    
+    <!-- Screen Padding -->
+    <dimen name="screen_padding_horizontal">20dp</dimen>
+    <dimen name="screen_padding_vertical">20dp</dimen>
+    
+    <!-- Add Contact Button -->
+    <dimen name="add_contact_button_height">56dp</dimen>
+    <dimen name="add_contact_button_corner_radius">12dp</dimen>
+    
+</resources>

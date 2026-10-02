@@ -1,12 +1,50 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base Theme - Soft Pink + Coral Design System -->
     <style name="Base.Theme.PulseCheck" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Primary Colors -->
         <item name="colorPrimary">@color/pulse_primary</item>
-        <item name="colorPrimaryVariant">@color/pulse_secondary</item>
+        <item name="colorPrimaryVariant">@color/pulse_primary_dark</item>
         <item name="colorOnPrimary">@color/white</item>
-        <item name="colorSecondary">@color/pulse_secondary</item>
-        <item name="colorOnSecondary">@color/white</item>
-        <item name="android:statusBarColor" tools:targetApi="l">@color/pulse_surface</item>
+        
+        <!-- Secondary Colors -->
+        <item name="colorSecondary">@color/pulse_button_secondary</item>
+        <item name="colorSecondaryVariant">@color/pulse_primary_light</item>
+        <item name="colorOnSecondary">@color/pulse_text_primary</item>
+        
+        <!-- Background & Surface -->
+        <item name="android:colorBackground">@color/pulse_background</item>
+        <item name="colorSurface">@color/pulse_surface</item>
+        <item name="colorOnSurface">@color/pulse_text_primary</item>
+        <item name="colorOnBackground">@color/pulse_text_primary</item>
+        
+        <!-- Status Bar -->
+        <item name="android:statusBarColor" tools:targetApi="l">@color/pulse_background</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+        
+        <!-- Navigation Bar -->
+        <item name="android:navigationBarColor" tools:targetApi="o">@color/pulse_background</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
+        
+        <!-- Text Colors -->
+        <item name="android:textColorPrimary">@color/pulse_text_primary</item>
+        <item name="android:textColorSecondary">@color/pulse_text_secondary</item>
+        <item name="android:textColorHint">@color/pulse_text_hint</item>
+        
+        <!-- Material Components -->
+        <item name="materialButtonStyle">@style/Widget.PulseCheck.Button.Primary</item>
+        <item name="textInputStyle">@style/Widget.PulseCheck.TextInputLayout</item>
+        <item name="materialCardViewStyle">@style/Widget.PulseCheck.Card</item>
     </style>
 
     <style name="Theme.PulseCheck" parent="Base.Theme.PulseCheck" />
+    
+    <!-- Splash Screen Theme -->
+    <style name="Theme.PulseCheck.Splash" parent="Theme.PulseCheck">
+        <item name="android:windowBackground">@color/pulse_background</item>
+    </style>
+    
+    <!-- Auth Screens Theme -->
+    <style name="Theme.PulseCheck.Auth" parent="Theme.PulseCheck">
+        <item name="android:windowBackground">@color/auth_bg</item>
+    </style>
 </resources>
