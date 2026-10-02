@@ -2,7 +2,6 @@ package com.example.pulsecheck
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.AnimationUtils
@@ -96,6 +95,16 @@ class PulseAnimationHelper(private val view: View) {
         alertAnimator = AnimatorSet().apply {
             playTogether(scaleX, scaleY, alpha)
             interpolator = AccelerateDecelerateInterpolator()
+            addListener(object : android.animation.Animator.AnimatorListener {
+                override fun onAnimationStart(animation: android.animation.Animator) {}
+                override fun onAnimationEnd(animation: android.animation.Animator) {
+                    if (alertAnimator === animation) {
+                        animation.start()
+                    }
+                }
+                override fun onAnimationCancel(animation: android.animation.Animator) {}
+                override fun onAnimationRepeat(animation: android.animation.Animator) {}
+            })
             start()
         }
     }

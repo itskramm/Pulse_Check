@@ -89,6 +89,9 @@ class home : AppCompatActivity() {
             updateProfile()
             updateSosContactCount()
             updateContactsPreview()
+            if (!isCountingDown && !switchArmed) {
+                pulseAnimation?.startIdlePulse()
+            }
         }
     }
 
@@ -104,6 +107,7 @@ class home : AppCompatActivity() {
         settingsCard.visibility = View.GONE
         notificationsCard.visibility = View.GONE
         pulseAnimation = PulseAnimationHelper(btnDeadMansSwitch)
+        pulseAnimation?.startIdlePulse()
     }
 
     private fun setupMenus() {
@@ -464,6 +468,7 @@ class home : AppCompatActivity() {
     override fun onDestroy() {
         countdownTimer?.cancel()
         countdownDialog?.dismiss()
+        pulseAnimation?.stopAllAnimations()
         stopContinuousVideoRecording()
         locationCallback?.let { fusedLocationClient.removeLocationUpdates(it) }
         if (::dbHelper.isInitialized) dbHelper.close()
